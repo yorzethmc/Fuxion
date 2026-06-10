@@ -1,0 +1,78 @@
+name: Deploy Visor to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Build Rango 2 - Categoría A
+        working-directory: ./RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO
+        run: npm install && npm run build
+
+      - name: Build Rango 2 - Categoría B
+        working-directory: ./RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP
+        run: npm install && npm run build
+
+      - name: Build Rango 2 - Categoría C
+        working-directory: ./RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA
+        run: npm install && npm run build
+
+      - name: Build Rango 3 - Categoría A
+        working-directory: ./RANGO_3_PREMIUM/CATEGORIA_A_AUTOR
+        run: npm install && npm run build
+
+      - name: Create Static Site Folder
+        run: |
+          mkdir public_html
+          cp -r docs public_html/
+          cp -r RANGO_1_ECONOMICO public_html/
+          
+          mkdir -p public_html/RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO
+          cp -r RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO/dist/* public_html/RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO/
+          
+          mkdir -p public_html/RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP
+          cp -r RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP/dist/* public_html/RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP/
+          
+          mkdir -p public_html/RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA
+          cp -r RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA/dist/* public_html/RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA/
+          
+          mkdir -p public_html/RANGO_3_PREMIUM/CATEGORIA_A_AUTOR
+          cp -r RANGO_3_PREMIUM/CATEGORIA_A_AUTOR/dist/* public_html/RANGO_3_PREMIUM/CATEGORIA_A_AUTOR/
+
+          # Adapt visor.html for static hosting
+          cat visor.html | \
+            sed 's|http://localhost:8081|RANGO_1_ECONOMICO/CATEGORIA_A_BASICO/index.html|g' | \
+            sed 's|http://localhost:8082|RANGO_1_ECONOMICO/CATEGORIA_B_QR_PRO/index.html|g' | \
+            sed 's|http://localhost:8083|RANGO_1_ECONOMICO/CATEGORIA_C_AUTOADMINISTRABLE_MANUAL/index.html|g' | \
+            sed 's|http://localhost:8084|RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO/index.html|g' | \
+            sed 's|http://localhost:8085|RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP/index.html|g' | \
+            sed 's|http://localhost:8086|RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA/index.html|g' | \
+            sed 's|http://localhost:8087|RANGO_3_PREMIUM/CATEGORIA_A_AUTOR/index.html|g' > public_html/index.html
+          
+          # Remove loader script from static visor
+          sed -i '/<div id="loader">/,/<\/div>/d' public_html/index.html
+          sed -i '/setTimeout(() => {/,/}, 8000);/d' public_html/index.html
+          sed -i 's/\/\/ Click en el primero por defecto/document.querySelectorAll(".nav-btn")[0].click();/g' public_html/index.html
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public_html
