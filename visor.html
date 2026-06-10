@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fusión Culinaria - Visor General</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', sans-serif; background: #0f172a; color: white; margin: 0; overflow: hidden; }
+    .nav-btn { text-align: left; padding: 10px 16px; border-radius: 8px; transition: all 0.2s; color: #94a3b8; font-size: 14px; font-weight: 600; width: 100%; border: 1px solid transparent; }
+    .nav-btn:hover { background: #1e293b; color: white; }
+    .nav-btn.active { background: #ea580c; color: white; border-color: #f97316; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4); }
+    .cat-title { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #64748b; margin-top: 24px; margin-bottom: 8px; font-weight: 800; padding-left: 8px; }
+    #loader { position: absolute; inset: 0; background: #0f172a; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; transition: opacity 0.5s; }
+    
+    /* Phone Mockup Styles */
+    .phone-mockup {
+      width: 375px;
+      height: 812px;
+      background: #000;
+      border-radius: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 0 0 12px #1f2937, inset 0 0 0 13px #374151;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s;
+    }
+    
+    .phone-notch {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 30px;
+      background: #1f2937;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      z-index: 20;
+    }
+
+    .phone-screen {
+      flex: 1;
+      margin: 12px;
+      margin-top: 12px;
+      border-radius: 28px;
+      overflow: hidden;
+      background: #fff;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Dynamic Backgrounds for Main Area */
+    .bg-rustico {
+      background-color: #2c1e16;
+      background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+    }
+    .bg-marmol {
+      background-color: #111;
+      background-image: url('https://www.transparenttextures.com/patterns/black-mamba.png');
+    }
+    .bg-limpio {
+      background-color: #f8fafc;
+    }
+  </style>
+</head>
+<body class="flex h-screen">
+
+  <div id="loader">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500 mb-4"></div>
+    <h2 class="text-xl font-bold">Iniciando Servidores...</h2>
+    <p class="text-gray-400 text-sm mt-2">Por favor espera unos segundos mientras todas las versiones arrancan.</p>
+  </div>
+
+  <aside class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col h-full overflow-y-auto z-30 relative shadow-2xl">
+    <div class="p-6 border-b border-slate-800">
+      <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-yellow-400">Visor Comercial</h1>
+      <p class="text-xs text-slate-500 mt-1">Fusión Culinaria (Mobile First)</p>
+    </div>
+    
+    <nav class="flex-1 p-4">
+      <div class="cat-title">Rango 1 - Económico</div>
+      <button class="nav-btn" onclick="loadSite(this, 'http://localhost:8081')">Categoría A - Básico</button>
+      <button class="nav-btn mt-1" onclick="loadSite(this, 'http://localhost:8082')">Categoría B - QR Pro</button>
+      <button class="nav-btn mt-1" onclick="loadSite(this, 'http://localhost:8083')">Categoría C - Autoadministrable</button>
+
+      <div class="cat-title">Rango 2 - Profesional</div>
+      <button class="nav-btn" onclick="loadSite(this, 'http://localhost:8084')">Categoría A - Estético</button>
+      <button class="nav-btn mt-1" onclick="loadSite(this, 'http://localhost:8085')">Categoría B - Pre Pedido WhatsApp</button>
+      <button class="nav-btn mt-1" onclick="loadSite(this, 'http://localhost:8086')">Categoría C - Combo Marca</button>
+
+      <div class="cat-title">Rango 3 - Premium</div>
+      <button class="nav-btn" onclick="loadSite(this, 'http://localhost:8087')">Categoría A - Autor</button>
+    </nav>
+  </aside>
+
+  <main id="main-area" class="flex-1 bg-rustico relative flex items-center justify-center transition-colors duration-500">
+    
+    <!-- Controles de Fondo -->
+    <div class="absolute top-6 right-6 z-20 flex gap-2 bg-black/50 backdrop-blur-md p-2 rounded-xl border border-white/10">
+      <button onclick="changeBg('bg-rustico')" class="px-4 py-2 rounded-lg text-xs font-bold bg-[#2c1e16] text-white border border-white/20 hover:scale-105 transition-transform">Madera Rústica</button>
+      <button onclick="changeBg('bg-marmol')" class="px-4 py-2 rounded-lg text-xs font-bold bg-[#111] text-white border border-white/20 hover:scale-105 transition-transform">Mármol Oscuro</button>
+      <button onclick="changeBg('bg-limpio')" class="px-4 py-2 rounded-lg text-xs font-bold bg-slate-100 text-slate-800 border border-slate-300 hover:scale-105 transition-transform">Mesa Blanca</button>
+    </div>
+
+    <!-- Mockup de Teléfono -->
+    <div class="phone-mockup">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <iframe id="viewer" src="about:blank" class="w-full h-full border-0"></iframe>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function loadSite(btn, url) {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // Mostrar estado de carga en el iframe visualmente
+      const iframe = document.getElementById('viewer');
+      iframe.style.opacity = '0';
+      setTimeout(() => {
+        iframe.src = url;
+        iframe.onload = () => { iframe.style.opacity = '1'; iframe.style.transition = 'opacity 0.3s'; };
+      }, 200);
+    }
+
+    function changeBg(bgClass) {
+      const main = document.getElementById('main-area');
+      main.classList.remove('bg-rustico', 'bg-marmol', 'bg-limpio');
+      main.classList.add(bgClass);
+    }
+
+    // Ocultar loader despues de 8 segundos (asumiendo que los servidores arrancan)
+    setTimeout(() => {
+      document.getElementById('loader').style.opacity = '0';
+      setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+      // Click en el primero por defecto
+      document.querySelectorAll('.nav-btn')[0].click();
+    }, 8000);
+  </script>
+</body>
+</html>

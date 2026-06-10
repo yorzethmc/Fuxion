@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="es-CR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fusión Culinaria | Menú Digital</title>
+    <meta name="description" content="Menú digital de Fusión Culinaria." />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              fusion: {
+                black: "#0a0a0a",
+                coal: "#171717",
+                yellow: "#f59e0b",
+                orange: "#ea580c",
+              },
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            }
+          },
+        },
+      };
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
+    </style>
+  </head>
+  <body class="text-gray-200 antialiased font-sans min-h-screen" style="background-color: #2c1e16; background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');">
+    <main class="min-h-screen px-4 pb-28 pt-8 max-w-md mx-auto">
+      
+      <header class="flex flex-col items-center text-center space-y-4 mb-10">
+        <img src="../../docs/logo_fusion.png" alt="Fusión Culinaria Logo" class="w-24 h-24 object-contain" onerror="this.style.display='none'">
+        <div>
+          <h1 class="text-3xl font-black tracking-tight text-white">Fusión Culinaria</h1>
+          <p class="text-sm font-semibold tracking-widest text-fusion-yellow uppercase mt-1">Sabanilla, Alajuela</p>
+        </div>
+        <p class="text-sm text-gray-400">Nuestro menú digital de solo lectura. Revisa nuestros platillos y contáctanos para ordenar.</p>
+        
+        <div class="w-full bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/10 mt-4 text-left shadow-xl">
+          <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Horarios de Atención</p>
+          <p class="text-sm text-gray-200 font-semibold">Lunes a domingo de 11:00 a.m. a 8:00 p.m.</p>
+        </div>
+
+        <div class="flex gap-2 w-full mt-4">
+          <a href="https://waze.com/ul?q=Fusion+Culinaria+Sabanilla" target="_blank" class="flex-1 flex items-center justify-center gap-2 bg-[#33ccff]/10 text-[#33ccff] border border-[#33ccff]/30 py-2 rounded-lg text-sm font-bold active:scale-95 transition-transform">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 512 512"><path d="M502.2 216c-3.7-27.1-13-53.1-27.4-76.4-14.7-23.8-33.8-44.5-56-60.8-22.6-16.7-48.4-28.7-75.7-35.3-27.7-6.7-56.7-8-84.9-3.7-27.7 4.2-54.3 13.9-78.1 28.5-23.4 14.4-44.1 33.3-60.6 55.4-16.7 22.4-28.9 47.9-35.6 74.9-6.8 27.4-8.2 56.1-4 84.1 4.3 27.6 14.2 54 28.9 77.5 14.5 23.2 33.4 43.4 55.4 59.4 22.4 16.4 47.9 28.4 75 35 27.5 6.7 56.3 8.1 84.4 3.9 27.5-4.1 53.9-13.8 77.5-28.3 23.3-14.3 43.8-33.1 60.3-55 16.5-22.2 28.6-47.5 35.3-74.4 6.8-27.3 8.1-56 3.9-84M255 140.2c59.8 0 108.3 48.6 108.3 108.3 0 59.8-48.6 108.3-108.3 108.3-59.8 0-108.3-48.6-108.3-108.3 0-59.8 48.6-108.3 108.3-108.3m0 167c32.4 0 58.7-26.3 58.7-58.7 0-32.4-26.3-58.7-58.7-58.7-32.4 0-58.7 26.3-58.7 58.7 0 32.4 26.3 58.7 58.7 58.7M160 216c0-11 9-20 20-20s20 9 20 20-9 20-20 20-20-9-20-20m150-20c11 0 20 9 20 20s-9 20-20 20-20-9-20-20 9-20 20-20z"/></svg>
+            Waze
+          </a>
+          <a href="https://www.google.com/maps/search/?api=1&query=Fusion+Culinaria+Sabanilla" target="_blank" class="flex-1 flex items-center justify-center gap-2 bg-[#ea4335]/10 text-[#ea4335] border border-[#ea4335]/30 py-2 rounded-lg text-sm font-bold active:scale-95 transition-transform">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-4.97 0-9 4.03-9 9 0 5.25 9 15 9 15s9-9.75 9-15c0-4.97-4.03-9-9-9zm0 12.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </header>
+      <section id="menu" class="space-y-8">
+        <section class="bg-black/60 backdrop-blur-md rounded-xl border border-white/10 overflow-hidden shadow-2xl">
+          <div class="bg-white/[0.02] px-4 py-3 border-b border-white/5">
+            <h2 class="text-sm font-black uppercase tracking-widest text-white">Entradas y entradas para compartir</h2>
+          </div>
+          <div class="px-4">
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Chicharrones de la Casa</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Deliciosos chicharrones acompañados de yuca frita, pico de gallo, limón y nuestra salsa especial.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡6.500</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Patacones con Todo</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Canastas de patacones crujientes rellenos de frijoles molidos arreglados, guacamole fresco, pico de gallo y queso rallado.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡4.800</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Dedos de Queso Crujientes</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Dedos de queso mozzarella empanizados, acompañados de salsa marinara artesanal de la casa. 6 unidades.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡4.200</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Alitas Fusión</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Alitas de pollo sumamente crujientes bañadas en la salsa de tu elección. Acompañadas de aderezo ranch y bastones de apio.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡4.500</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Nachos Fusión</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Totopos de maíz crujientes cubiertos con frijoles arreglados, mezcla de quesos fundidos, carne mechada premium, guacamole, natilla y pico de gallo. Tamaño grande para compartir.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡7.200</strong>
+            </article>
+          </div>
+        </section>
+        <section class="bg-black/60 backdrop-blur-md rounded-xl border border-white/10 overflow-hidden shadow-2xl">
+          <div class="bg-white/[0.02] px-4 py-3 border-b border-white/5">
+            <h2 class="text-sm font-black uppercase tracking-widest text-white">Hamburguesas artesanales</h2>
+          </div>
+          <div class="px-4">
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Hamburguesa Fusión<span class="ml-2 rounded-md bg-fusion-yellow/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-fusion-yellow border border-fusion-yellow/20">RECOMENDADO</span></h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">200g de carne artesanal de res seleccionada, queso cheddar fundido, tocineta ahumada crujiente, cebolla caramelizada al vino tinto, lechuga fresca, tomate y aderezo especial Fusión en pan brioche sellado con mantequilla.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡5.800</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">La Parrillera</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">200g de carne de res a la parrilla, chorizo parrillero artesanal, queso madurado, chimichurri de la casa, lechuga y tomate.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡6.200</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Crispy Chicken Burger</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Pechuga de pollo extra crujiente empanizada con receta secreta, queso suizo, ensalada coleslaw de la casa, pepinillos y mayonesa chipotle.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡5.200</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">La Monster Burger<span class="ml-2 rounded-md bg-fusion-orange/20 px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-fusion-orange border border-fusion-orange/30">NUEVO</span></h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Para los amantes de la carne. Doble torta de carne artesanal, 400g en total, doble queso cheddar, doble tocineta, huevo frito, aros de cebolla crujientes dentro de la hamburguesa, salsa BBQ y aderezo de la casa.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡8.500</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Veggie Fusión</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Torta artesanal a base de garbanzo y quinoa bien sazonada, queso blanco a la plancha, hongos salteados, lechuga, tomate y aderezo de aguacate.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡4.900</strong>
+            </article>
+          </div>
+        </section>
+        <section class="bg-black/60 backdrop-blur-md rounded-xl border border-white/10 overflow-hidden shadow-2xl">
+          <div class="bg-white/[0.02] px-4 py-3 border-b border-white/5">
+            <h2 class="text-sm font-black uppercase tracking-widest text-white">Platos fuertes y especialidades</h2>
+          </div>
+          <div class="px-4">
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Casado Fusión</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Arroz, frijoles caseros, plátano maduro, ensalada fresca, huevo frito y picadillo del día. Tradicional con un toque gourmet.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡4.500</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Costillas BBQ Ahumadas</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Tiernas costillas de cerdo cocinadas lentamente que se desprenden del hueso, bañadas en salsa BBQ artesanal. Acompañadas de papas fritas y ensalada coleslaw.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡8.500</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Fajitas Mixtas</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Tiras de carne de res y pechuga de pollo salteadas con chile dulce, cebolla y un toque de lizano gourmet. Acompañadas de arroz, frijoles, tortillas de harina y guacamole.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡7.800</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Salmón en Salsa de Maracuyá</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Filet de salmón fresco sellado a la perfección, bañado en una reducción cremosa de maracuyá. Acompañado de puré de papa rústico y vegetales salteados al wok.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡11.500</strong>
+            </article>
+          </div>
+        </section>
+        <section class="bg-black/60 backdrop-blur-md rounded-xl border border-white/10 overflow-hidden shadow-2xl">
+          <div class="bg-white/[0.02] px-4 py-3 border-b border-white/5">
+            <h2 class="text-sm font-black uppercase tracking-widest text-white">Combos express y promociones</h2>
+          </div>
+          <div class="px-4">
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Combo Pareja Fusión</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">2 Hamburguesas Fusión, 2 porciones de papas fritas rústicas y 2 bebidas de 500ml a elegir.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡12.500</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Combo Familiar Parrillero</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Una orden grande de Chicharrones de la Casa, 12 Alitas Fusión con salsa a elegir, 1 Orden de Patacones con Todo y 1 Refresco Familiar de 2 Litros.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡18.900</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Combo Alitas Express</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">6 Alitas de pollo con papas fritas y un refresco natural o gaseosa de 500ml.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡5.500</strong>
+            </article>
+          </div>
+        </section>
+        <section class="bg-black/60 backdrop-blur-md rounded-xl border border-white/10 overflow-hidden shadow-2xl">
+          <div class="bg-white/[0.02] px-4 py-3 border-b border-white/5">
+            <h2 class="text-sm font-black uppercase tracking-widest text-white">Bebidas</h2>
+          </div>
+          <div class="px-4">
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Refrescos Naturales</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Refrescos naturales de 500ml. Sabores disponibles: Cas, Maracuyá, Guanábana y Fresa. A elegir en agua o en leche.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡1.500</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Gaseosas / Refrescos embotellados</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Bebidas embotelladas de 500ml.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡1.200</strong>
+            </article>
+            <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-100 flex items-center">Cervezas Nacionales</h3>
+                <p class="mt-1 text-xs leading-relaxed text-gray-500">Cervezas nacionales solo para llevar o consumo local si aplica.</p>
+              </div>
+              <strong class="shrink-0 text-sm font-black text-fusion-yellow">₡1.800</strong>
+            </article>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <!-- Botón Global Único -->
+    <a
+      href="https://wa.me/50687292124?text=Hola%20Fusi%C3%B3n%20Culinaria%2C%20quisiera%20hacer%20una%20consulta%20sobre%20el%20men%C3%BA."
+      aria-label="Contactar por WhatsApp"
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-sm flex items-center justify-center gap-2 rounded-2xl bg-fusion-orange px-6 py-4 text-sm font-black uppercase tracking-wider text-white shadow-2xl shadow-fusion-orange/20 transition-transform active:scale-95"
+    >
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+      Consultar por WhatsApp
+    </a>
+  </body>
+</html>
