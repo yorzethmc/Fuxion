@@ -3,16 +3,6 @@ import data from '../../../docs/menu-data-clean.json';
 
 const formatPrice = (price) => new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC', maximumFractionDigits: 0 }).format(price).replace('CRC', '₡').trim();
 
-// Imágenes curadas para la experiencia editorial
-const categoryImages = {
-  "entradas": "https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=2000&auto=format&fit=crop",
-  "hamburguesas": "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=2000&auto=format&fit=crop",
-  "cortes-de-carne": "https://images.unsplash.com/photo-1558030006-450675393462?q=80&w=2000&auto=format&fit=crop",
-  "bebidas": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2000&auto=format&fit=crop",
-  "postres": "https://images.unsplash.com/photo-1551024506-0cb4a169289a?q=80&w=2000&auto=format&fit=crop"
-};
-const defaultImage = "https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=2000&auto=format&fit=crop";
-
 export default function App() {
   const { restaurant, categories, items } = data;
   const [activeTab, setActiveTab] = useState(categories[0].id);
@@ -23,6 +13,7 @@ export default function App() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [itemOptions, setItemOptions] = useState({});
   const [itemNotes, setItemNotes] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
   // Checkout State
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -56,7 +47,7 @@ export default function App() {
     Object.values(itemOptions).forEach(choices => {
       choices.forEach(c => total += (c.priceDelta || 0));
     });
-    return total;
+    return total * quantity;
   };
 
   const addToCart = () => {
@@ -69,15 +60,23 @@ export default function App() {
       product: selectedItem,
       options: itemOptions,
       notes: itemNotes,
+      quantity: quantity,
       totalPrice: calculateItemTotal()
     }]);
     setSelectedItem(null);
     setItemOptions({});
     setItemNotes("");
+    setQuantity(1);
+  };
+
+  const removeFromCart = (cartId) => {
+    setCart(prev => prev.filter(item => item.id !== cartId));
   };
 
   const generateCommand = () => {
-    // Ticket Formatting (No Emojis, professional POS layout)
+    if(cart.length === 0) return alert("Tu carrito está vacío.");
+    if(orderType === 'express' && !customerInfo.address) return alert("Por favor ingresa tu dirección de entrega.");
+
     let ticket = `=================================\n`;
     ticket += `       ${restaurant.name.toUpperCase()}       \n`;
     ticket += `        NUEVA ORDEN        \n`;
@@ -93,7 +92,6 @@ export default function App() {
     }
     ticket += `\n---------------------------------\n`;
 
-    // Group by category
     const itemsByCategory = {};
     cart.forEach(item => {
       const cat = categories.find(c => c.id === item.product.category)?.name || 'OTROS';
@@ -104,8 +102,7 @@ export default function App() {
     Object.keys(itemsByCategory).forEach(cat => {
       ticket += `[ ${cat.toUpperCase()} ]\n`;
       itemsByCategory[cat].forEach(item => {
-        ticket += `1x ${item.product.name} - ${formatPrice(item.totalPrice)}\n`;
-        
+        ticket += `${item.quantity}x ${item.product.name} - ${formatPrice(item.totalPrice)}\n`;
         Object.keys(item.options).forEach(optId => {
           const optDef = item.product.options.find(o => o.id === optId);
           if (optDef) {
@@ -113,7 +110,6 @@ export default function App() {
             ticket += `   -> ${optDef.name}: ${choices}\n`;
           }
         });
-
         if(item.notes && item.notes.trim() !== "") {
           ticket += `   ** NOTA: ${item.notes.trim()} **\n`;
         }
@@ -129,49 +125,56 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen bg-luxury-dark text-luxury-light font-sans bg-noise overflow-x-hidden selection:bg-luxury-gold selection:text-black">
+    <div className="relative min-h-screen bg-luxury-dark text-luxury-light font-sans bg-noise overflow-x-hidden">
       
-      {/* Header Fijo */}
-      <header className="fixed top-0 w-full z-40 glass-card px-8 py-6 flex justify-between items-center transition-all duration-500">
-        <h1 className="font-serif text-3xl md:text-4xl tracking-wide uppercase text-white drop-shadow-md">
+      {/* Header Mobile & Desktop */}
+      <header className="fixed top-0 w-full z-40 bg-black/90 backdrop-blur-md border-b border-white/10 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+        <h1 className="font-serif text-2xl md:text-3xl tracking-widest uppercase text-luxury-gold drop-shadow-md text-center">
           {restaurant.name}
         </h1>
-        <div className="flex gap-4">
-            <button onClick={() => setIsCheckoutOpen(true)} className="flex items-center gap-3 text-luxury-gold border border-luxury-gold/30 px-6 py-2 rounded-full hover:bg-luxury-gold hover:text-black transition-all">
-                <span className="text-xs font-bold tracking-widest uppercase">Ver Orden ({cart.length})</span>
-                <span className="font-serif font-bold">{formatPrice(cartTotal)}</span>
+        
+        {/* Mobile Navigation (Scrollable) */}
+        <nav className="w-full md:w-auto flex overflow-x-auto pb-2 md:pb-0 gap-6 no-scrollbar snap-x">
+          {categories.map(cat => (
+            <button 
+              key={cat.id} 
+              onClick={() => setActiveTab(cat.id)}
+              className={`snap-center shrink-0 text-xs uppercase tracking-[0.2em] font-bold pb-1 border-b-2 transition-all ${activeTab === cat.id ? 'text-luxury-gold border-luxury-gold' : 'text-luxury-muted border-transparent hover:text-white'}`}
+            >
+              {cat.name}
             </button>
-        </div>
+          ))}
+        </nav>
+
+        {/* Cart Button */}
+        <button onClick={() => setIsCheckoutOpen(true)} className="fixed md:static bottom-6 right-6 md:bottom-auto md:right-auto z-50 bg-luxury-gold text-black shadow-[0_10px_30px_rgba(212,175,55,0.3)] md:shadow-none md:bg-transparent md:border md:border-luxury-gold md:text-luxury-gold px-6 py-3 rounded-full flex items-center gap-3 hover:bg-white hover:text-black hover:border-white transition-all font-bold">
+            <span className="uppercase text-xs tracking-widest">Orden ({cart.length})</span>
+            <span className="font-serif text-lg">{formatPrice(cartTotal)}</span>
+        </button>
       </header>
 
-      {/* Navegación por Categorías */}
-      <nav className="fixed left-8 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col gap-6">
-        {categories.map(cat => (
-          <button 
-            key={cat.id} 
-            onClick={() => setActiveTab(cat.id)}
-            className={`text-xs uppercase tracking-[0.3em] transition-all duration-500 ${activeTab === cat.id ? 'text-luxury-gold scale-110 translate-x-4' : 'text-luxury-muted hover:text-white'}`}
-          >
-            {cat.name}
-          </button>
-        ))}
-      </nav>
-
-      <main className="max-w-7xl mx-auto px-6 pt-32 pb-32 lg:pl-48 lg:grid-cols-12 gap-16 relative z-10" key={animKey}>
-        <div className="lg:col-span-7 space-y-16">
-            <h2 className="font-serif text-6xl text-luxury-gold opacity-90 animate-fade-in-up">{categories.find(c => c.id === activeTab)?.name}</h2>
+      <main className="max-w-4xl mx-auto px-6 pt-40 pb-32 relative z-10" key={animKey}>
+        <div className="space-y-12">
+            <h2 className="font-serif text-4xl md:text-5xl text-white opacity-90 animate-fade-in-up border-b border-white/10 pb-4 mb-8">
+              {categories.find(c => c.id === activeTab)?.name}
+            </h2>
             
-            <div className="space-y-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {activeItems.map((item, index) => (
-                <article key={item.id} className="group animate-fade-in-up cursor-pointer" style={{ animationDelay: `${(index + 1) * 0.1}s` }} onClick={() => { setSelectedItem(item); setItemOptions({}); setItemNotes(""); }}>
-                    <div className="flex justify-between items-baseline mb-3">
-                        <h3 className="font-serif text-2xl md:text-3xl text-luxury-light group-hover:text-luxury-gold transition-colors duration-300">
-                            {item.name}
-                        </h3>
-                        <div className="flex-1 border-b border-luxury-muted/20 mx-4 border-dashed relative top-[-6px]"></div>
-                        <span className="font-sans text-luxury-gold text-lg tracking-wider">{formatPrice(item.price)}</span>
+                <article key={item.id} className="group animate-fade-in-up bg-white/5 border border-white/10 rounded-xl p-6 hover:border-luxury-gold transition-all duration-300 flex flex-col justify-between" style={{ animationDelay: `${(index + 1) * 0.1}s` }}>
+                    <div>
+                      <div className="flex justify-between items-start mb-3">
+                          <h3 className="font-serif text-xl md:text-2xl text-white group-hover:text-luxury-gold transition-colors pr-4">
+                              {item.name}
+                          </h3>
+                          <span className="font-sans text-luxury-gold font-bold whitespace-nowrap">{formatPrice(item.price)}</span>
+                      </div>
+                      <p className="text-luxury-muted font-light leading-relaxed text-sm tracking-wide mb-6">{item.description}</p>
                     </div>
-                    <p className="text-luxury-muted font-light leading-relaxed max-w-2xl text-sm tracking-wide">{item.description}</p>
+                    
+                    <button onClick={() => { setSelectedItem(item); setItemOptions({}); setItemNotes(""); setQuantity(1); }} className="w-full py-3 border border-luxury-gold/30 text-luxury-gold uppercase text-xs tracking-widest font-bold hover:bg-luxury-gold hover:text-black transition-colors rounded-md">
+                      Seleccionar
+                    </button>
                 </article>
                 ))}
             </div>
@@ -180,28 +183,30 @@ export default function App() {
 
       {/* Modal de Personalización de Platillo */}
       {selectedItem && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex justify-center items-center p-4">
-          <div className="bg-[#111] border border-white/10 w-full max-w-2xl rounded-sm p-8 max-h-[90vh] overflow-y-auto animate-fade-in-up relative">
-            <button onClick={() => setSelectedItem(null)} className="absolute top-6 right-6 text-luxury-muted hover:text-white text-2xl font-light">✕</button>
-            <h2 className="font-serif text-4xl text-luxury-gold mb-2">{selectedItem.name}</h2>
-            <p className="text-luxury-muted mb-8">{selectedItem.description}</p>
+        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex justify-center items-end md:items-center p-0 md:p-4">
+          <div className="bg-[#0a0a0a] border border-white/10 w-full md:max-w-2xl md:rounded-2xl rounded-t-3xl p-6 md:p-8 max-h-[90vh] overflow-y-auto animate-fade-in-up relative shadow-2xl">
+            <button onClick={() => setSelectedItem(null)} className="absolute top-6 right-6 text-luxury-muted hover:text-white text-2xl font-light bg-white/10 w-10 h-10 rounded-full flex items-center justify-center">✕</button>
+            <h2 className="font-serif text-3xl md:text-4xl text-luxury-gold mb-2 pr-12">{selectedItem.name}</h2>
+            <p className="text-luxury-muted mb-8 text-sm">{selectedItem.description}</p>
 
             {/* Opciones del Item */}
             {selectedItem.options?.map(opt => (
                 <div key={opt.id} className="mb-8">
-                  <div className="flex justify-between items-baseline mb-4">
-                    <h4 className="font-serif text-xl tracking-wide uppercase text-white">{opt.name}</h4>
-                    {opt.required && <span className="text-[10px] tracking-widest text-luxury-gold uppercase border border-luxury-gold/30 px-2 py-1">Requerido</span>}
+                  <div className="flex justify-between items-baseline mb-4 border-b border-white/10 pb-2">
+                    <h4 className="font-sans font-bold text-sm tracking-widest uppercase text-white">{opt.name}</h4>
+                    {opt.required && <span className="text-[10px] tracking-widest text-red-400 uppercase bg-red-400/10 px-2 py-1 rounded-full">Requerido</span>}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {opt.choices.map(choice => {
                       const isMulti = opt.type === 'multi';
                       const isSelected = itemOptions[opt.id]?.some(c => c.id === choice.id);
                       return (
-                        <label key={choice.id} className={`flex items-center justify-between p-4 border transition-all cursor-pointer ${isSelected ? 'border-luxury-gold bg-luxury-gold/10 text-white' : 'border-white/10 text-luxury-muted hover:border-white/30'}`}>
+                        <label key={choice.id} className={`flex items-center justify-between p-4 border rounded-xl transition-all cursor-pointer ${isSelected ? 'border-luxury-gold bg-luxury-gold/10 text-white shadow-[0_0_15px_rgba(212,175,55,0.15)]' : 'border-white/10 text-luxury-muted hover:border-white/30 hover:bg-white/5'}`}>
                           <div className="flex items-center gap-3">
-                            <div className={`w-4 h-4 flex items-center justify-center border ${isMulti ? 'rounded-sm' : 'rounded-full'} ${isSelected ? 'border-luxury-gold bg-luxury-gold' : 'border-luxury-muted'}`}></div>
-                            <span className="text-sm uppercase tracking-wider">{choice.name}</span>
+                            <div className={`w-5 h-5 flex items-center justify-center border ${isMulti ? 'rounded-md' : 'rounded-full'} ${isSelected ? 'border-luxury-gold bg-luxury-gold' : 'border-white/30'}`}>
+                              {isSelected && <div className="w-2.5 h-2.5 bg-black rounded-sm"></div>}
+                            </div>
+                            <span className="text-sm font-semibold">{choice.name}</span>
                           </div>
                           {choice.priceDelta > 0 && <span className="text-xs text-luxury-gold font-bold">+{formatPrice(choice.priceDelta)}</span>}
                           <input type={isMulti ? "checkbox" : "radio"} className="hidden" checked={!!isSelected} onChange={() => handleOptionChange(opt.id, choice, isMulti)} />
@@ -213,94 +218,109 @@ export default function App() {
             ))}
 
             {/* Exclusiones / Notas de Ingredientes */}
-            <div className="mb-10">
-                <h4 className="font-serif text-xl tracking-wide uppercase text-white mb-4">Instrucciones Especiales</h4>
+            <div className="mb-8 border-t border-white/10 pt-6">
+                <h4 className="font-sans font-bold text-sm tracking-widest uppercase text-white mb-4">Instrucciones Especiales</h4>
                 <textarea 
                     value={itemNotes} 
                     onChange={e => setItemNotes(e.target.value)}
                     placeholder="Ej. Sin cebolla, aderezo aparte, bien cocido..."
-                    className="w-full bg-black/50 border border-white/10 text-white p-4 text-sm focus:outline-none focus:border-luxury-gold resize-none h-24"
+                    className="w-full bg-black/50 border border-white/10 rounded-xl text-white p-4 text-sm focus:outline-none focus:border-luxury-gold resize-none h-24 transition-colors"
                 ></textarea>
             </div>
 
-            <button onClick={addToCart} className="w-full bg-luxury-gold text-black font-bold uppercase tracking-widest py-5 flex justify-between px-8 hover:bg-white transition-colors">
-                <span>Agregar a la Orden</span>
-                <span>{formatPrice(calculateItemTotal())}</span>
-            </button>
+            {/* Controles de Cantidad y Botón de Agregar */}
+            <div className="flex gap-4 items-center mt-8">
+              <div className="flex items-center bg-white/5 border border-white/10 rounded-xl overflow-hidden h-14">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-5 text-xl hover:bg-white/10 text-luxury-gold transition-colors h-full">-</button>
+                <span className="w-8 text-center font-bold text-white">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="px-5 text-xl hover:bg-white/10 text-luxury-gold transition-colors h-full">+</button>
+              </div>
+              <button onClick={addToCart} className="flex-1 h-14 bg-luxury-gold text-black font-bold uppercase tracking-widest rounded-xl flex justify-between items-center px-6 hover:bg-white transition-colors shadow-lg shadow-luxury-gold/20">
+                  <span>Agregar</span>
+                  <span>{formatPrice(calculateItemTotal())}</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Modal de Checkout */}
       {isCheckoutOpen && (
-        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-lg flex justify-center items-center p-4">
-          <div className="bg-[#111] border border-white/10 w-full max-w-xl p-8 max-h-[90vh] overflow-y-auto relative animate-fade-in-up">
-            <button onClick={() => setIsCheckoutOpen(false)} className="absolute top-6 right-6 text-luxury-muted hover:text-white text-2xl font-light">✕</button>
-            <h2 className="font-serif text-3xl text-luxury-gold mb-8 uppercase tracking-widest text-center">Checkout</h2>
+        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-lg flex justify-center items-end md:items-center p-0 md:p-4">
+          <div className="bg-[#0a0a0a] border border-white/10 w-full md:max-w-2xl md:rounded-2xl rounded-t-3xl p-6 md:p-8 max-h-[90vh] overflow-y-auto relative animate-fade-in-up shadow-2xl">
+            <button onClick={() => setIsCheckoutOpen(false)} className="absolute top-6 right-6 text-luxury-muted hover:text-white text-2xl font-light bg-white/10 w-10 h-10 rounded-full flex items-center justify-center">✕</button>
+            <h2 className="font-serif text-3xl text-luxury-gold mb-8 uppercase tracking-widest text-center">Tu Orden</h2>
             
             {cart.length === 0 ? (
-                <p className="text-center text-luxury-muted py-12">Tu orden está vacía.</p>
+                <div className="text-center py-16">
+                  <p className="text-luxury-muted mb-6">No has agregado nada aún.</p>
+                  <button onClick={() => setIsCheckoutOpen(false)} className="border border-luxury-gold text-luxury-gold px-8 py-3 rounded-full uppercase text-xs tracking-widest font-bold hover:bg-luxury-gold hover:text-black transition-colors">Volver al Menú</button>
+                </div>
             ) : (
                 <div className="space-y-8">
                     {/* Lista de Items */}
-                    <div className="space-y-4">
+                    <div className="space-y-4 max-h-64 overflow-y-auto pr-2 no-scrollbar">
                         {cart.map(item => (
                             <div key={item.id} className="flex justify-between items-start border-b border-white/5 pb-4">
-                                <div>
-                                    <h4 className="font-bold text-white text-sm">{item.product.name}</h4>
-                                    {Object.values(item.options).flat().map(o => <p key={o.id} className="text-xs text-luxury-muted">+ {o.name}</p>)}
-                                    {item.notes && <p className="text-xs text-red-400 mt-1 italic">Nota: {item.notes}</p>}
+                                <div className="flex-1 pr-4">
+                                    <h4 className="font-bold text-white text-sm"><span className="text-luxury-gold mr-2">{item.quantity}x</span>{item.product.name}</h4>
+                                    {Object.values(item.options).flat().map(o => <p key={o.id} className="text-xs text-luxury-muted ml-6">+ {o.name}</p>)}
+                                    {item.notes && <p className="text-xs text-red-400 mt-1 italic ml-6">Nota: {item.notes}</p>}
                                 </div>
-                                <span className="text-luxury-gold text-sm font-bold">{formatPrice(item.totalPrice)}</span>
+                                <div className="flex flex-col items-end gap-2">
+                                  <span className="text-luxury-gold text-sm font-bold whitespace-nowrap">{formatPrice(item.totalPrice)}</span>
+                                  <button onClick={() => removeFromCart(item.id)} className="text-xs text-red-500/70 hover:text-red-500 uppercase tracking-widest font-bold">Quitar</button>
+                                </div>
                             </div>
                         ))}
                     </div>
 
                     {/* Tipo de Orden */}
                     <div>
-                        <h4 className="text-xs uppercase tracking-widest text-luxury-muted mb-3">Tipo de Orden</h4>
+                        <h4 className="text-[10px] uppercase tracking-[0.2em] text-luxury-muted mb-3 font-bold border-b border-white/10 pb-2">1. Modalidad de Entrega</h4>
                         <div className="grid grid-cols-3 gap-2">
                             {['local', 'llevar', 'express'].map(t => (
-                                <button key={t} onClick={() => setOrderType(t)} className={`py-3 text-xs uppercase tracking-widest font-bold border transition-colors ${orderType === t ? 'bg-white text-black border-white' : 'border-white/20 text-white hover:border-luxury-gold'}`}>{t}</button>
+                                <button key={t} onClick={() => setOrderType(t)} className={`py-4 rounded-xl text-xs uppercase tracking-widest font-bold border transition-all ${orderType === t ? 'bg-luxury-gold text-black border-luxury-gold shadow-lg shadow-luxury-gold/20' : 'bg-white/5 border-white/10 text-white hover:border-luxury-gold/50'}`}>{t}</button>
                             ))}
                         </div>
                     </div>
 
                     {/* Datos del Cliente */}
                     <div className="space-y-3">
-                        <input type="text" placeholder="Tu Nombre" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} className="w-full bg-black border border-white/10 p-3 text-sm text-white outline-none focus:border-luxury-gold" />
+                        <h4 className="text-[10px] uppercase tracking-[0.2em] text-luxury-muted mb-3 font-bold border-b border-white/10 pb-2">2. Tus Datos</h4>
+                        <input type="text" placeholder="Nombre completo" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-xl p-4 text-sm text-white outline-none focus:border-luxury-gold transition-colors" />
                         {orderType === 'express' && (
-                            <input type="text" placeholder="Dirección Exacta de Envío" value={customerInfo.address} onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})} className="w-full bg-black border border-white/10 p-3 text-sm text-white outline-none focus:border-luxury-gold" />
+                            <input type="text" placeholder="Dirección Exacta de Envío" value={customerInfo.address} onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-xl p-4 text-sm text-white outline-none focus:border-luxury-gold transition-colors" />
                         )}
                     </div>
 
                     {/* Método de Pago */}
                     <div>
-                        <h4 className="text-xs uppercase tracking-widest text-luxury-muted mb-3">Método de Pago</h4>
-                        <div className="grid grid-cols-2 gap-2">
+                        <h4 className="text-[10px] uppercase tracking-[0.2em] text-luxury-muted mb-3 font-bold border-b border-white/10 pb-2">3. Método de Pago</h4>
+                        <div className="grid grid-cols-2 gap-3">
                             {['sinpe', 'efectivo'].map(t => (
-                                <button key={t} onClick={() => setPaymentMethod(t)} className={`py-3 text-xs uppercase tracking-widest font-bold border transition-colors ${paymentMethod === t ? 'bg-luxury-gold text-black border-luxury-gold' : 'border-white/20 text-white hover:border-luxury-gold'}`}>{t}</button>
+                                <button key={t} onClick={() => setPaymentMethod(t)} className={`py-4 rounded-xl text-xs uppercase tracking-widest font-bold border transition-all ${paymentMethod === t ? 'bg-luxury-gold text-black border-luxury-gold shadow-lg shadow-luxury-gold/20' : 'bg-white/5 border-white/10 text-white hover:border-luxury-gold/50'}`}>{t}</button>
                             ))}
                         </div>
                     </div>
 
                     {/* Lógica de Efectivo + Express */}
                     {paymentMethod === 'efectivo' && orderType === 'express' && (
-                        <div className="bg-white/5 p-4 border border-white/10">
-                            <label className="text-xs uppercase tracking-widest text-luxury-muted block mb-2">¿Con cuánto efectivo pagas?</label>
-                            <input type="number" placeholder="Ej. 20000" value={cashAmount} onChange={e => setCashAmount(e.target.value)} className="w-full bg-black border border-white/10 p-3 text-sm text-white outline-none focus:border-luxury-gold" />
-                            <p className="text-xs text-luxury-gold mt-2">Calcularemos tu vuelto exacto para el repartidor.</p>
+                        <div className="bg-white/5 p-5 rounded-xl border border-luxury-gold/30">
+                            <label className="text-[10px] uppercase tracking-[0.2em] text-luxury-gold font-bold block mb-3">¿Con qué billete vas a pagar?</label>
+                            <input type="number" placeholder="Ej. 20000" value={cashAmount} onChange={e => setCashAmount(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-sm text-white outline-none focus:border-luxury-gold transition-colors" />
+                            <p className="text-[10px] text-luxury-muted mt-2 italic">Esto es para enviarte el vuelto exacto.</p>
                         </div>
                     )}
 
                     {/* Totales y Botón Final */}
-                    <div className="pt-6 border-t border-white/20">
+                    <div className="pt-6 border-t border-white/20 mt-8">
                         <div className="flex justify-between items-end mb-6">
-                            <span className="text-sm uppercase tracking-widest text-luxury-muted">Total a Pagar</span>
-                            <span className="text-3xl font-serif text-luxury-gold">{formatPrice(cartTotal)}</span>
+                            <span className="text-sm uppercase tracking-widest text-luxury-muted font-bold">Total Final</span>
+                            <span className="text-4xl font-serif text-luxury-gold">{formatPrice(cartTotal)}</span>
                         </div>
-                        <button onClick={generateCommand} className="w-full bg-green-600 hover:bg-green-500 text-white font-bold uppercase tracking-[0.2em] py-5 transition-colors shadow-[0_0_20px_rgba(22,163,74,0.3)]">
-                            Confirmar y Enviar Pedido
+                        <button onClick={generateCommand} className="w-full bg-white hover:bg-luxury-gold text-black font-black uppercase tracking-[0.2em] py-5 rounded-xl transition-colors shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+                            Enviar Pedido por WhatsApp
                         </button>
                     </div>
                 </div>
