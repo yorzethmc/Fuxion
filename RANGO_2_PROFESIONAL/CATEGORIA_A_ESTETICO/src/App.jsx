@@ -58,6 +58,8 @@ export default function App() {
       {/* Global CTA */}
       <a 
         href={`https://wa.me/${restaurant.whatsapp}?text=${encodeURIComponent('Hola ' + restaurant.name + ', quisiera consultar sobre el menú.')}`} 
+        target="_blank"
+        rel="noreferrer"
         className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm bg-orange-600 text-white font-black uppercase tracking-wider p-4 rounded-2xl text-center shadow-[0_0_20px_rgba(234,88,12,0.3)] active:scale-95 transition-transform z-50"
       >
         Contactar por WhatsApp

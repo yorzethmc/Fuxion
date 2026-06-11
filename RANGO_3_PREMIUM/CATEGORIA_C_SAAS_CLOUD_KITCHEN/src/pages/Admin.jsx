@@ -2,18 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import seedDataJSON from '../../../../docs/menu-data-clean.json';
+import { enrichItems, getLocalItems, saveLocalItems, withTimeout } from '../localDemoData';
 
 const formatPrice = (price) => new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC', maximumFractionDigits: 0 }).format(price).replace('CRC', '₡').trim();
 
 export default function Admin() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dataMode, setDataMode] = useState('firebase');
 
   const loadData = async () => {
     setLoading(true);
-    const itemSnap = await getDocs(collection(db, "items"));
-    setItems(itemSnap.docs.map(d => ({ id: d.id, ...d.data() })));
-    setLoading(false);
+    try {
+      const itemSnap = await withTimeout(getDocs(collection(db, "items")), 4500, 'carga de inventario');
+      const remoteItems = itemSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (remoteItems.length === 0) throw new Error('Inventario remoto vacio');
+      setItems(remoteItems);
+      setDataMode('firebase');
+    } catch (e) {
+      console.warn('Usando inventario demo local:', e);
+      setItems(getLocalItems());
+      setDataMode('demo');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { loadData(); }, []);
@@ -21,33 +33,53 @@ export default function Admin() {
   const handleSeed = async () => {
     if(!window.confirm("¿Seguro que quieres sembrar la base de datos con menu-data-clean.json? Esto sobreescribirá datos.")) return;
     setLoading(true);
+    const seededItems = enrichItems(seedDataJSON.items);
+    saveLocalItems(seededItems);
     try {
-        await setDoc(doc(db, "settings", "restaurant"), seedDataJSON.restaurant);
-        for (const cat of seedDataJSON.categories) {
-            await setDoc(doc(db, "categories", cat.id), cat);
-        }
-        for (const item of seedDataJSON.items) {
-            await setDoc(doc(db, "items", item.id), { ...item, active: true });
-        }
-        alert("¡Base de datos sembrada con éxito!");
-        loadData();
+        await withTimeout(Promise.all([
+          setDoc(doc(db, "settings", "restaurant"), seedDataJSON.restaurant),
+          ...seedDataJSON.categories.map((cat, index) => setDoc(doc(db, "categories", cat.id), { ...cat, order: cat.order ?? index + 1 })),
+          ...seededItems.map(item => setDoc(doc(db, "items", item.id), item))
+        ]), 10000, 'siembra de base de datos');
+        alert("Base de datos remota y demo local sembradas con éxito.");
+        setDataMode('firebase');
     } catch (e) {
         console.error(e);
-        alert("Error sembrando la base de datos.");
+        alert("Firebase no respondió; los datos quedaron sembrados en modo demo local.");
+        setDataMode('demo');
     }
+    setItems(seededItems);
     setLoading(false);
   };
 
   const toggleActive = async (id, currentStatus) => {
-    await updateDoc(doc(db, "items", id), { active: !currentStatus });
-    setItems(items.map(i => i.id === id ? { ...i, active: !currentStatus } : i));
+    const nextItems = items.map(i => i.id === id ? { ...i, active: !currentStatus } : i);
+    setItems(nextItems);
+    saveLocalItems(nextItems);
+    if (dataMode === 'firebase') {
+      try {
+        await withTimeout(updateDoc(doc(db, "items", id), { active: !currentStatus }), 3500, 'actualizar estado');
+      } catch (e) {
+        console.warn('Estado guardado solo en demo local:', e);
+        setDataMode('demo');
+      }
+    }
   };
 
   const updatePrice = async (id, newPrice) => {
     const price = parseFloat(newPrice);
     if(isNaN(price)) return;
-    await updateDoc(doc(db, "items", id), { price });
-    setItems(items.map(i => i.id === id ? { ...i, price } : i));
+    const nextItems = items.map(i => i.id === id ? { ...i, price } : i);
+    setItems(nextItems);
+    saveLocalItems(nextItems);
+    if (dataMode === 'firebase') {
+      try {
+        await withTimeout(updateDoc(doc(db, "items", id), { price }), 3500, 'actualizar precio');
+      } catch (e) {
+        console.warn('Precio guardado solo en demo local:', e);
+        setDataMode('demo');
+      }
+    }
   };
 
   if(loading) return <div className="min-h-screen bg-black text-white p-8">Cargando Admin...</div>;
@@ -56,7 +88,10 @@ export default function Admin() {
     <div className="min-h-screen bg-[#0f172a] text-slate-300 font-sans p-8">
       <div className="max-w-6xl mx-auto">
         <header className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-white">Back-office: Inventario</h1>
+            <div>
+                <h1 className="text-3xl font-bold text-white">Back-office: Inventario</h1>
+                <p className="text-xs uppercase tracking-widest text-slate-500 mt-2">{dataMode === 'firebase' ? 'Conectado a Firebase' : 'Modo demo local'}</p>
+            </div>
             <button onClick={handleSeed} className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-500">Sembrar BD Inicial</button>
         </header>
 

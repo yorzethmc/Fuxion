@@ -75,14 +75,17 @@ export default function App() {
 
   const generateCommand = () => {
     if(cart.length === 0) return alert("Tu carrito está vacío.");
+    if(!customerInfo.name.trim()) return alert("Por favor ingresa tu nombre.");
     if(orderType === 'express' && !customerInfo.address) return alert("Por favor ingresa tu dirección de entrega.");
+    if(paymentMethod === 'efectivo' && cashAmount && Number(cashAmount) < cartTotal) return alert("El monto en efectivo no puede ser menor al total.");
 
     let ticket = `=================================\n`;
     ticket += `       ${restaurant.name.toUpperCase()}       \n`;
     ticket += `        NUEVA ORDEN        \n`;
     ticket += `=================================\n\n`;
 
-    ticket += `CLIENTE: ${customerInfo.name || 'No especificado'}\n`;
+    ticket += `CLIENTE: ${customerInfo.name.trim()}\n`;
+    if(customerInfo.phone.trim()) ticket += `TELEFONO: ${customerInfo.phone.trim()}\n`;
     ticket += `TIPO: ${orderType.toUpperCase()}\n`;
     if(orderType === 'express') ticket += `DIRECCION: ${customerInfo.address || 'No especificada'}\n`;
     ticket += `PAGO: ${paymentMethod.toUpperCase()}\n`;
@@ -132,6 +135,10 @@ export default function App() {
         <h1 className="font-serif text-2xl md:text-3xl tracking-widest uppercase text-luxury-gold drop-shadow-md text-center">
           {restaurant.name}
         </h1>
+        <div className="flex gap-2">
+          <a href="https://waze.com/ul?q=Fusion+Culinaria+Sabanilla" target="_blank" rel="noreferrer" className="text-[10px] uppercase tracking-widest border border-luxury-gold/30 text-luxury-gold px-3 py-2 hover:bg-luxury-gold hover:text-black transition-colors">Waze</a>
+          <a href="https://www.google.com/maps/search/?api=1&query=Fusion+Culinaria+Sabanilla" target="_blank" rel="noreferrer" className="text-[10px] uppercase tracking-widest border border-luxury-gold/30 text-luxury-gold px-3 py-2 hover:bg-luxury-gold hover:text-black transition-colors">Maps</a>
+        </div>
         
         {/* Mobile Navigation (Scrollable) */}
         <nav className="w-full md:w-auto flex overflow-x-auto pb-2 md:pb-0 gap-6 no-scrollbar snap-x">
@@ -289,6 +296,7 @@ export default function App() {
                     <div className="space-y-3">
                         <h4 className="text-[10px] uppercase tracking-[0.2em] text-luxury-muted mb-3 font-bold border-b border-white/10 pb-2">2. Tus Datos</h4>
                         <input type="text" placeholder="Nombre completo" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-xl p-4 text-sm text-white outline-none focus:border-luxury-gold transition-colors" />
+                        <input type="tel" placeholder="Teléfono de contacto" value={customerInfo.phone} onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-xl p-4 text-sm text-white outline-none focus:border-luxury-gold transition-colors" />
                         {orderType === 'express' && (
                             <input type="text" placeholder="Dirección Exacta de Envío" value={customerInfo.address} onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-xl p-4 text-sm text-white outline-none focus:border-luxury-gold transition-colors" />
                         )}

@@ -2,7 +2,7 @@
 
 ## Descripción General
 
-Este repositorio contiene **7 versiones diferentes** de la página web/menú digital para el restaurante **Fusión Culinaria**, ubicado en Sabanilla, Alajuela, Costa Rica.
+Este repositorio contiene **9 versiones diferentes** de la página web/menú digital para el restaurante **Fusión Culinaria**, ubicado en Sabanilla, Alajuela, Costa Rica.
 
 Cada versión representa un nivel de complejidad y funcionalidad diferente, organizado en **3 rangos de precio** con sus respectivas **categorías**. Esto permite al cliente elegir la opción que mejor se adapte a su presupuesto y necesidades.
 
@@ -26,9 +26,11 @@ Fuxion/
 │   ├── CATEGORIA_B_PRE_PEDIDO_WHATSAPP/  # Carrito + pedido por WhatsApp
 │   └── CATEGORIA_C_COMBO_MARCA/   # Paquete comercial completo con SEO
 ├── RANGO_3_PREMIUM/               # Experiencia de alta gama
-│   └── CATEGORIA_A_AUTOR/         # Sitio editorial con imágenes premium
+│   ├── CATEGORIA_A_AUTOR/         # Sitio editorial premium con carrito
+│   ├── CATEGORIA_B_ECOMMERCE_GOURMET/ # E-commerce gourmet con checkout
+│   └── CATEGORIA_C_SAAS_CLOUD_KITCHEN/ # Cloud Kitchen, Admin y POS
 ├── Visor_General.bat              # ⭐ Abre TODAS las versiones en un solo panel
-├── iniciar_visor.js               # Script que orquesta los 7 servidores
+├── iniciar_visor.js               # Script que orquesta los 9 servidores
 └── visor.html                     # Interfaz del visor "Todo en Uno"
 ```
 
@@ -36,7 +38,7 @@ Fuxion/
 
 ## ⭐ Visor Todo en Uno
 
-Para ver todas las versiones simultáneamente sin abrir 7 ventanas:
+Para ver todas las versiones simultáneamente sin abrir 9 ventanas:
 
 1. Haz doble clic en `Visor_General.bat` (en la carpeta raíz).
 2. Espera ~10 segundos a que arranquen todos los servidores.
@@ -180,7 +182,7 @@ Aplicaciones modernas construidas con React y empaquetadas con Vite. Ofrecen exp
 
 ### 🟣 RANGO 3 - PREMIUM
 
-La experiencia más visual y editorial.
+La experiencia más avanzada. Mantiene las funciones de los rangos inferiores y suma presentación de alta gama, checkout más robusto, e-commerce y operación Cloud Kitchen/POS.
 
 ---
 
@@ -191,15 +193,56 @@ La experiencia más visual y editorial.
 
 **Características:**
 - Hero visual de pantalla completa con imágenes de Unsplash.
-- Promos destacadas con imágenes y precios.
+- Menú completo por categorías con imágenes y precios.
+- Modal de producto con opciones, cantidad y notas.
+- Carrito persistente en pantalla con edición básica.
+- Checkout con tipo de servicio, datos del cliente, pago y WhatsApp.
+- Botones de ubicación para Waze y Google Maps.
 - Sección de "experiencia": horario, servicio a domicilio, ubicación.
 - Footer con contacto directo.
 - Estilo editorial premium (tipografía grande, espaciado generoso, tonos cálidos).
-- Botón de WhatsApp para pedidos premium.
 
-**Ideal para:** Demo visual de alto impacto. Presentación de marca para cliente que busca la imagen más cuidada y profesional.
+**Ideal para:** Demo visual de alto impacto con pedido detallado. Presentación de marca para cliente que busca imagen cuidada sin perder conversión.
 
-**Limitaciones:** Usa imágenes externas genéricas de Unsplash, no fotos reales del negocio. No tiene carrito ni pedido detallado. No tiene SEO tan completo como el Combo Marca.
+**Limitaciones:** Usa imágenes externas genéricas de Unsplash, no fotos reales del negocio. No guarda pedidos en backend.
+
+---
+
+#### Categoría B - E-commerce Gourmet
+**Ubicación:** `RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET/`
+
+**¿Qué es?** Una experiencia de compra gourmet con carrito avanzado, checkout modal, ticket de pedido y validaciones de datos.
+
+**Características:**
+- Conserva navegación, menú, carrito, WhatsApp, Waze y Google Maps.
+- Checkout con nombre, teléfono, tipo de servicio, dirección condicional y método de pago.
+- Validación de efectivo para evitar cambios negativos.
+- Mensaje estructurado para operación interna.
+- SEO y Open Graph propios para despliegue.
+
+**Ideal para:** Restaurante que quiere vender una versión premium más cercana a e-commerce sin implementar pasarela de pago.
+
+**Limitaciones:** No integra pagos en línea ni inventario real.
+
+---
+
+#### Categoría C - SaaS Cloud Kitchen & POS
+**Ubicación:** `RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN/`
+
+**¿Qué es?** Una demo operativa con tres rutas: menú para cliente, panel admin y pantalla POS/KDS de cocina.
+
+**Características:**
+- Menú cliente con productos activos, carrito y creación de órdenes.
+- Panel admin para activar/desactivar productos y cambiar precios.
+- POS/KDS con órdenes pendientes, impresión y botón de completar.
+- Integración Firebase/Firestore.
+- Fallback local con datos demo para que la app no quede bloqueada si Firebase no responde.
+- Script `npm run seed` para inyectar menú y órdenes demo en Firestore.
+- Configuración de despliegue SPA para Vercel y Netlify.
+
+**Ideal para:** Venta de paquete premium operativo tipo Cloud Kitchen, cocina fantasma o restaurante con flujo de órdenes.
+
+**Limitaciones:** Es una demo sin autenticación, roles, auditoría de cambios ni pagos integrados.
 
 ---
 
@@ -216,6 +259,8 @@ Cada carpeta tiene un archivo `iniciar.bat`. Haz doble clic para abrir esa versi
 | CATEGORIA_B_PRE_PEDIDO_WHATSAPP | React + Vite | `npm run dev` |
 | CATEGORIA_C_COMBO_MARCA | React + Vite | `npm run dev` |
 | CATEGORIA_A_AUTOR | React + Vite | `npm run dev` |
+| CATEGORIA_B_ECOMMERCE_GOURMET | React + Vite | `npm run dev` |
+| CATEGORIA_C_SAAS_CLOUD_KITCHEN | React + Vite + Firebase | `npm run dev` |
 
 **Nota:** Los proyectos de React requieren Node.js instalado. Las dependencias se instalan automáticamente la primera vez.
 

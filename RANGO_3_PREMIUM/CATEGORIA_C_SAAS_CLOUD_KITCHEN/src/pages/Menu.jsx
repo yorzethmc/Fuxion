@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
+import { getLocalMenuData, saveLocalOrder, withTimeout } from '../localDemoData';
 
 const formatPrice = (price) => new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC', maximumFractionDigits: 0 }).format(price).replace('CRC', '₡').trim();
 
@@ -10,6 +11,7 @@ export default function Menu() {
   const [restaurant, setRestaurant] = useState({ name: "Fusión Culinaria" });
   const [activeTab, setActiveTab] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [dataMode, setDataMode] = useState('firebase');
 
   // Cart State
   const [cart, setCart] = useState([]);
@@ -29,12 +31,18 @@ export default function Menu() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const catSnap = await getDocs(collection(db, "categories"));
-        const itemSnap = await getDocs(collection(db, "items"));
-        const restSnap = await getDocs(collection(db, "settings"));
+        const [catSnap, itemSnap, restSnap] = await withTimeout(Promise.all([
+          getDocs(collection(db, "categories")),
+          getDocs(collection(db, "items")),
+          getDocs(collection(db, "settings"))
+        ]), 4500, 'carga de menu');
         
         let loadedCats = catSnap.docs.map(d => d.data());
         let loadedItems = itemSnap.docs.map(d => d.data()).filter(i => i.active !== false); // Only active items
+
+        if (loadedCats.length === 0 || loadedItems.length === 0) {
+          throw new Error('Base remota vacia');
+        }
         
         // Ordenar categorías por orden
         loadedCats.sort((a,b) => a.order - b.order);
@@ -47,8 +55,15 @@ export default function Menu() {
         });
 
         if(loadedCats.length > 0) setActiveTab(loadedCats[0].id);
+        setDataMode('firebase');
       } catch (e) {
-        console.error("Error fetching menu:", e);
+        console.warn("Usando datos demo locales:", e);
+        const localData = getLocalMenuData();
+        setRestaurant(localData.restaurant);
+        setCategories(localData.categories);
+        setItems(localData.items);
+        setActiveTab(localData.categories[0]?.id || null);
+        setDataMode('demo');
       } finally {
         setLoading(false);
       }
@@ -106,24 +121,34 @@ export default function Menu() {
     if(orderType === 'express' && !customerInfo.address) return alert("Por favor ingresa tu dirección.");
     if(!customerInfo.name) return alert("Por favor ingresa tu nombre.");
 
-    const orderData = {
+    const localOrderData = {
         customer: customerInfo,
         type: orderType,
         payment: paymentMethod,
         cashTendered: paymentMethod === 'efectivo' && orderType === 'express' ? (parseFloat(cashAmount) || cartTotal) : null,
         items: cart,
         total: cartTotal,
-        status: 'pending', // pending, printed, completed
+        status: 'pending'
+    };
+
+    const remoteOrderData = {
+        ...localOrderData,
         createdAt: serverTimestamp()
     };
 
     try {
-        await addDoc(collection(db, "orders"), orderData);
+        if (dataMode === 'firebase') {
+          await withTimeout(addDoc(collection(db, "orders"), remoteOrderData), 4500, 'envio de orden');
+        } else {
+          saveLocalOrder(localOrderData);
+        }
         setOrderSuccess(true);
         setCart([]);
     } catch (e) {
-        console.error("Error creating order:", e);
-        alert("Hubo un error al enviar tu orden.");
+        console.warn("Guardando orden en modo demo local:", e);
+        saveLocalOrder(localOrderData);
+        setOrderSuccess(true);
+        setCart([]);
     }
   };
 
@@ -132,7 +157,7 @@ export default function Menu() {
   if(categories.length === 0) return (
       <div className="min-h-screen bg-luxury-dark text-white flex flex-col items-center justify-center font-serif text-xl p-8 text-center">
           <p className="mb-4">El menú está vacío.</p>
-          <a href="#/admin" className="text-luxury-gold underline border border-luxury-gold px-6 py-3 rounded">Ir al Panel Admin para Sembrar Datos</a>
+          <a href="/admin" className="text-luxury-gold underline border border-luxury-gold px-6 py-3 rounded">Ir al Panel Admin para Sembrar Datos</a>
       </div>
   );
 
@@ -144,6 +169,11 @@ export default function Menu() {
         <h1 className="font-serif text-2xl md:text-3xl tracking-widest uppercase text-luxury-gold drop-shadow-md text-center">
           {restaurant.name}
         </h1>
+        {dataMode === 'demo' && (
+          <span className="text-[10px] uppercase tracking-widest bg-luxury-gold/10 text-luxury-gold border border-luxury-gold/30 px-3 py-1 rounded-full">
+            Modo demo local
+          </span>
+        )}
         
         {/* Mobile Navigation (Scrollable) */}
         <nav className="w-full md:w-auto flex overflow-x-auto pb-2 md:pb-0 gap-6 no-scrollbar snap-x">

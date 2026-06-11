@@ -41,6 +41,8 @@ Usado en:
 - `RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP`
 - `RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA`
 - `RANGO_3_PREMIUM/CATEGORIA_A_AUTOR`
+- `RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET`
+- `RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN`
 
 Todos estos proyectos tienen:
 
@@ -49,6 +51,14 @@ Todos estos proyectos tienen:
 - `src/main.jsx`
 - `src/App.jsx`
 - `src/index.css`
+
+### Firebase / Firestore
+
+Usado en:
+
+- `RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN`
+
+La demo SaaS usa Firestore para cargar menu, crear ordenes, mostrar POS/KDS y administrar disponibilidad/precios. Tambien incluye fallback local en `localStorage` para que la demo siga usable si Firebase tarda, falla o no tiene datos.
 
 ### Tailwind CSS por CDN
 
@@ -68,6 +78,8 @@ Los proyectos React declaran:
 - `react-dom`
 - `vite`
 - `@vitejs/plugin-react`
+- `firebase` en la demo Cloud Kitchen/POS.
+- `react-router-dom` en la demo Cloud Kitchen/POS.
 
 Versiones declaradas en los `package.json`:
 
@@ -90,7 +102,7 @@ Desventajas:
 - Hay datos repetidos en varios archivos.
 - El numero de WhatsApp se repite.
 - Los productos y precios se duplican entre categorias.
-- No existe una fuente unica de verdad para menu, marca y configuracion.
+- La fuente mas completa del menu ya esta centralizada en `docs/menu-data-clean.json`, aunque algunas demos economicas mantienen datos propios por independencia comercial.
 
 ## Flujo principal de usuario
 

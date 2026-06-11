@@ -1,37 +1,88 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { collection, query, orderBy, onSnapshot, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { completeLocalOrder, getLocalOrders, saveLocalOrders } from '../localDemoData';
 
 const formatPrice = (price) => new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC', maximumFractionDigits: 0 }).format(price).replace('CRC', '₡').trim();
 
 export default function POS() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dataMode, setDataMode] = useState('firebase');
+  const previousOrderCount = useRef(0);
+  const hasLoadedOnce = useRef(false);
 
   useEffect(() => {
+    let resolvedRemote = false;
+    const normalizeOrders = (rawOrders) => rawOrders.map(order => ({
+        ...order,
+        createdAt: order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt || Date.now())
+    })).filter(o => o.status !== 'completed');
+
+    const loadLocalOrders = () => {
+        const localOrders = normalizeOrders(getLocalOrders());
+        setOrders(localOrders);
+        previousOrderCount.current = localOrders.length;
+        hasLoadedOnce.current = true;
+        setDataMode('demo');
+        setLoading(false);
+    };
+
+    const fallbackTimer = window.setTimeout(() => {
+        if (!resolvedRemote) loadLocalOrders();
+    }, 4500);
+
+    const localPoll = window.setInterval(() => {
+        if (!resolvedRemote) loadLocalOrders();
+    }, 3000);
+
     const q = query(collection(db, "orders"), orderBy("createdAt", "asc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-        const fetchedOrders = snapshot.docs.map(d => ({
+        resolvedRemote = true;
+        window.clearTimeout(fallbackTimer);
+        window.clearInterval(localPoll);
+        const fetchedOrders = normalizeOrders(snapshot.docs.map(d => ({
             id: d.id,
-            ...d.data(),
-            createdAt: d.data().createdAt?.toDate() || new Date()
-        })).filter(o => o.status !== 'completed'); // Solo ordenes activas
+            ...d.data()
+        })));
 
         // Detección de orden nueva (sonido de campana)
-        if(fetchedOrders.length > orders.length && !loading) {
+        if(hasLoadedOnce.current && fetchedOrders.length > previousOrderCount.current) {
             const audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
             audio.play().catch(e => console.log("Auto-play prevented", e));
         }
 
         setOrders(fetchedOrders);
+        previousOrderCount.current = fetchedOrders.length;
+        hasLoadedOnce.current = true;
+        setDataMode('firebase');
         setLoading(false);
+    }, (error) => {
+        console.warn('POS usando modo demo local:', error);
+        window.clearTimeout(fallbackTimer);
+        loadLocalOrders();
     });
 
-    return () => unsubscribe();
-  }, [loading, orders.length]);
+    return () => {
+        window.clearTimeout(fallbackTimer);
+        window.clearInterval(localPoll);
+        unsubscribe();
+    };
+  }, []);
 
   const markAsCompleted = async (id) => {
-    await updateDoc(doc(db, "orders", id), { status: 'completed' });
+    setOrders(prev => prev.filter(order => order.id !== id));
+    if (id.startsWith('demo-')) {
+        completeLocalOrder(id);
+        return;
+    }
+    try {
+        await updateDoc(doc(db, "orders", id), { status: 'completed' });
+    } catch (e) {
+        const localOrders = getLocalOrders().map(order => order.id === id ? { ...order, status: 'completed' } : order);
+        saveLocalOrders(localOrders);
+        setDataMode('demo');
+    }
   };
 
   const handlePrint = (orderId) => {
@@ -58,7 +109,10 @@ export default function POS() {
       `}</style>
       
       <header className="mb-8 flex justify-between items-center">
-        <h1 className="text-3xl font-black text-slate-800 uppercase tracking-widest">KDS (Kitchen Display)</h1>
+        <div>
+            <h1 className="text-3xl font-black text-slate-800 uppercase tracking-widest">KDS (Kitchen Display)</h1>
+            <p className="text-xs uppercase tracking-widest text-slate-500 mt-2">{dataMode === 'firebase' ? 'Firebase en tiempo real' : 'Modo demo local'}</p>
+        </div>
         <div className="bg-green-500 text-white px-4 py-1 rounded-full text-xs font-bold animate-pulse">EN LÍNEA</div>
       </header>
 

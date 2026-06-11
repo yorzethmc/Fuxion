@@ -1,11 +1,11 @@
 # Auditoría QA y Mejoras
 
 ## 1. Discrepancias de Datos Resueltas
-- **Número de WhatsApp**: Se encontró una discrepancia donde los documentos markdown antiguos (`01-resumen-del-proyecto.md`, `05-datos-y-configuracion.md`, `07-raw-data-y-fuentes.md`) mencionaban el número `50660224371`. Sin embargo, el archivo centralizado `menu-data-clean.json` establece el número correcto como `50687292124`. Se define `menu-data-clean.json` como la Única Fuente de Verdad (SSOT) y en todas las refactorizaciones se utilizará de manera estricta el número `50687292124`.
+- **Número de WhatsApp**: La documentación principal queda alineada con el número oficial `50687292124`. Se define `docs/menu-data-clean.json` como la Única Fuente de Verdad (SSOT) y en todas las refactorizaciones se utilizará de manera estricta ese valor.
 
 ## 2. Reporte de Enlaces Rotos y Soluciones
 - **Enlaces de Waze y Google Maps**: Se identificó en la documentación y demos anteriores la presencia de enlaces vacíos (`href="#"`) o búsquedas ambiguas.
-  - *Solución*: En las siguientes fases, todos los enlaces de ubicación serán reconstruidos con esquemas funcionales:
+  - *Solución*: Los enlaces de ubicación deben usar esquemas funcionales:
     - **Waze**: `https://waze.com/ul?q=Fusion+Culinaria+Sabanilla`
     - **Google Maps**: `https://www.google.com/maps/search/?api=1&query=Fusion+Culinaria+Sabanilla`
 - **Enlaces de WhatsApp**:
