@@ -12,7 +12,8 @@ const apps = [
   { path: 'RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO', cmd: 'npm.cmd', args: ['run', 'dev', '--', '--port', '8084', '--strictPort'] },
   { path: 'RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP', cmd: 'npm.cmd', args: ['run', 'dev', '--', '--port', '8085', '--strictPort'] },
   { path: 'RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA', cmd: 'npm.cmd', args: ['run', 'dev', '--', '--port', '8086', '--strictPort'] },
-  { path: 'RANGO_3_PREMIUM/CATEGORIA_A_AUTOR', cmd: 'npm.cmd', args: ['run', 'dev', '--', '--port', '8087', '--strictPort'] }
+  { path: 'RANGO_3_PREMIUM/CATEGORIA_A_AUTOR', cmd: 'npm.cmd', args: ['run', 'dev', '--', '--port', '8087', '--strictPort'] },
+  { path: 'RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET', cmd: 'npm.cmd', args: ['run', 'dev', '--', '--port', '8088', '--strictPort'] }
 ];
 
 const children = [];

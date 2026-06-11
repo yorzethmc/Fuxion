@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     // Fetch data from SSOT (Single Source of Truth)
-    const response = await fetch('../../docs/menu-data-clean.json');
+    const response = await fetch('./menu.json');
     if (!response.ok) throw new Error('No se pudo cargar el menú');
     const data = await response.json();
     

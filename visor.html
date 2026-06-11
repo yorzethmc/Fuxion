@@ -82,24 +82,33 @@
       </div>
     </div>
     
-    <!-- Dropdown Selector de Modelos -->
-    <div class="relative pr-4">
-      <select id="model-selector" onchange="changeModel(this.value)" class="appearance-none bg-black/20 border border-white/20 text-current backdrop-blur-md px-6 py-3 rounded-xl font-semibold cursor-pointer outline-none hover:bg-black/30 transition-colors shadow-lg">
-        <optgroup label="Rango Económico (Estático)">
-          <option value="r1a">Categoría A - Menú Básico</option>
-          <option value="r1b">Categoría B - QR Pro</option>
-          <option value="r1c">Categoría C - Autoadministrable</option>
-        </optgroup>
-        <optgroup label="Rango Profesional (Interactivos SPA)">
-          <option value="r2a">Categoría A - Estético (Tabs)</option>
-          <option value="r2b">Categoría B - Pre Pedido (Carrito WhatsApp)</option>
-          <option value="r2c">Categoría C - Combo Marca (SEO)</option>
-        </optgroup>
-        <optgroup label="Rango Premium (Lujo)">
-          <option value="r3a">Categoría A - Menú de Autor</option>
-        </optgroup>
-      </select>
-      <div class="pointer-events-none absolute inset-y-0 right-8 flex items-center text-current opacity-50">▼</div>
+    <!-- Dropdown Selector de Modelos y Botón Abrir -->
+    <div class="relative pr-4 flex items-center gap-4">
+      <div class="relative">
+        <select id="model-selector" onchange="changeModel(this.value)" class="appearance-none bg-black/20 border border-white/20 text-current backdrop-blur-md pl-4 pr-10 py-3 rounded-xl font-semibold cursor-pointer outline-none hover:bg-black/30 transition-colors shadow-lg">
+          <optgroup label="Rango Económico (Estático)">
+            <option value="r1a">Categoría A - Menú Básico</option>
+            <option value="r1b">Categoría B - QR Pro</option>
+            <option value="r1c">Categoría C - Autoadministrable</option>
+          </optgroup>
+          <optgroup label="Rango Profesional (Interactivos SPA)">
+            <option value="r2a">Categoría A - Estético (Tabs)</option>
+            <option value="r2b">Categoría B - Pre Pedido (Carrito WhatsApp)</option>
+            <option value="r2c">Categoría C - Combo Marca (SEO)</option>
+          </optgroup>
+          <optgroup label="Rango Premium (Lujo)">
+            <option value="r3a">Categoría A - Menú de Autor</option>
+            <option value="r3b">Categoría B - E-commerce Gourmet</option>
+          </optgroup>
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-current opacity-50">▼</div>
+      </div>
+      <button onclick="openFullScreen()" class="bg-white/10 hover:bg-white/20 border border-white/20 text-current px-4 py-3 rounded-xl font-bold backdrop-blur-md transition-all shadow-lg flex items-center gap-2" title="Abrir en Pantalla Completa">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+        <span class="hidden sm:inline">Pantalla Completa</span>
+      </button>
     </div>
   </header>
 
@@ -206,7 +215,7 @@
       },
       "r3a": {
         url: "http://localhost:8087",
-        badge: "Premium Lujo",
+        badge: "Premium Lujo 1",
         title: "Experiencia de Autor",
         desc: "Un menú que justifica tickets altos. Vende emociones y exclusividad antes del primer bocado.",
         features: [
@@ -214,6 +223,19 @@
           "Micro-animaciones fluidas e inmersivas",
           "Tipografías finas y Efecto Glassmorphism",
           "El fondo del celular evoca un restaurante de lujo"
+        ],
+        theme: "bg-marble-luxury"
+      },
+      "r3b": {
+        url: "http://localhost:8088",
+        badge: "Premium Lujo 2",
+        title: "E-commerce Gourmet",
+        desc: "Experiencia de Autor + Logística. Checkout avanzado para dominar el Delivery y Takeaway con precisión milimétrica.",
+        features: [
+          "🛒 Personalización Quirúrgica (Sin Cebolla)",
+          "Selector Inteligente (Local, Llevar, Express)",
+          "Lógica de Pago (Cálculo de vuelto de efectivo)",
+          "Comanda Profesional (Agrupada y sin emojis)"
         ],
         theme: "bg-marble-luxury"
       }
@@ -259,6 +281,14 @@
         iframe.src = data.url;
         iframe.onload = () => { iframe.style.opacity = '1'; };
       }, 300);
+    }
+
+    function openFullScreen() {
+      const modelKey = document.getElementById('model-selector').value;
+      const data = modelsData[modelKey];
+      if(data) {
+        window.open(data.url, '_blank');
+      }
     }
 
     // Ocultar loader despues de 8 segundos (asumiendo que los servidores arrancan)

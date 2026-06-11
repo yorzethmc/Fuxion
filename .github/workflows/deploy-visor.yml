@@ -38,6 +38,10 @@ jobs:
         working-directory: ./RANGO_3_PREMIUM/CATEGORIA_A_AUTOR
         run: npm install && npm run build
 
+      - name: Build Rango 3 - Categoría B
+        working-directory: ./RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET
+        run: npm install && npm run build
+
       - name: Create Static Site Folder
         run: |
           mkdir public_html
@@ -56,7 +60,10 @@ jobs:
           mkdir -p public_html/RANGO_3_PREMIUM/CATEGORIA_A_AUTOR
           cp -r RANGO_3_PREMIUM/CATEGORIA_A_AUTOR/dist/* public_html/RANGO_3_PREMIUM/CATEGORIA_A_AUTOR/
 
-          # Adapt visor.html for static hosting
+          mkdir -p public_html/RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET
+          cp -r RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET/dist/* public_html/RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET/
+
+          # Prepare Visor.html for static hosting
           cat visor.html | \
             sed 's|http://localhost:8081|RANGO_1_ECONOMICO/CATEGORIA_A_BASICO/index.html|g' | \
             sed 's|http://localhost:8082|RANGO_1_ECONOMICO/CATEGORIA_B_QR_PRO/index.html|g' | \
@@ -64,7 +71,8 @@ jobs:
             sed 's|http://localhost:8084|RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO/index.html|g' | \
             sed 's|http://localhost:8085|RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP/index.html|g' | \
             sed 's|http://localhost:8086|RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA/index.html|g' | \
-            sed 's|http://localhost:8087|RANGO_3_PREMIUM/CATEGORIA_A_AUTOR/index.html|g' > public_html/index.html
+            sed 's|http://localhost:8087|RANGO_3_PREMIUM/CATEGORIA_A_AUTOR/index.html|g' | \
+            sed 's|http://localhost:8088|RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET/index.html|g' > public_html/index.html
           
           # Remove loader script from static visor
           sed -i '/<div id="loader">/,/<\/div>/d' public_html/index.html
