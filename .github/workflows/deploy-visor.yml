@@ -68,8 +68,8 @@ jobs:
           
           # Remove loader script from static visor
           sed -i '/<div id="loader">/,/<\/div>/d' public_html/index.html
-          sed -i '/setTimeout(() => {/,/}, 8000);/d' public_html/index.html
-          sed -i 's/\/\/ Click en el primero por defecto/document.querySelectorAll(".nav-btn")[0].click();/g' public_html/index.html
+          sed -i 's/setTimeout(() => {/setTimeout(() => {/g' public_html/index.html
+          sed -i 's/}, 8000);/}, 0);/g' public_html/index.html
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3

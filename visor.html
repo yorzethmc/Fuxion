@@ -3,29 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fusión Culinaria - Visor General</title>
+  <title>Showroom - Fusión Culinaria</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Cormorant+Garamond:wght@600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Outfit', sans-serif; background: #0f172a; color: white; margin: 0; overflow: hidden; }
-    .nav-btn { text-align: left; padding: 10px 16px; border-radius: 8px; transition: all 0.2s; color: #94a3b8; font-size: 14px; font-weight: 600; width: 100%; border: 1px solid transparent; }
-    .nav-btn:hover { background: #1e293b; color: white; }
-    .nav-btn.active { background: #ea580c; color: white; border-color: #f97316; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4); }
-    .cat-title { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #64748b; margin-top: 24px; margin-bottom: 8px; font-weight: 800; padding-left: 8px; }
-    #loader { position: absolute; inset: 0; background: #0f172a; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; transition: opacity 0.5s; }
+    body { font-family: 'Outfit', sans-serif; overflow: hidden; margin: 0; transition: background 0.8s ease, color 0.8s ease; }
     
-    /* Phone Mockup Styles */
+    /* Texturas Dinámicas del Visor */
+    .bg-light-clean { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); color: #0f172a; }
+    .bg-wood-rustic { background-color: #2c1e16; background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png'); color: #f8fafc; }
+    .bg-dark-pro { background: linear-gradient(135deg, #0f172a 0%, #000000 100%); color: #f8fafc; }
+    .bg-marble-luxury { background-color: #0c0c0c; background-image: url('https://www.transparenttextures.com/patterns/black-mamba.png'); color: #d4af37; }
+
+    /* Mockup Celular */
     .phone-mockup {
       width: 375px;
       height: 812px;
       background: #000;
       border-radius: 40px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 0 0 12px #1f2937, inset 0 0 0 13px #374151;
+      box-shadow: 0 40px 60px -15px rgba(0, 0, 0, 0.5), inset 0 0 0 12px #1f2937, inset 0 0 0 13px #374151;
       position: relative;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: transform 0.3s;
+      transform: scale(0.9);
+      transform-origin: center;
     }
     
     .phone-notch {
@@ -52,94 +54,222 @@
       z-index: 10;
     }
 
-    /* Dynamic Backgrounds for Main Area */
-    .bg-rustico {
-      background-color: #2c1e16;
-      background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
-    }
-    .bg-marmol {
-      background-color: #111;
-      background-image: url('https://www.transparenttextures.com/patterns/black-mamba.png');
-    }
-    .bg-limpio {
-      background-color: #f8fafc;
+    #loader { position: absolute; inset: 0; background: #0f172a; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; transition: opacity 0.5s; }
+    
+    .glass-header {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
-<body class="flex h-screen">
+<body id="body-container" class="bg-light-clean flex flex-col h-screen">
 
+  <!-- Pantalla de Carga -->
   <div id="loader">
     <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500 mb-4"></div>
     <h2 class="text-xl font-bold">Iniciando Servidores...</h2>
-    <p class="text-gray-400 text-sm mt-2">Por favor espera unos segundos mientras todas las versiones arrancan.</p>
+    <p class="text-gray-400 text-sm mt-2">Por favor espera unos segundos.</p>
   </div>
 
-  <aside class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col h-full overflow-y-auto z-30 relative shadow-2xl">
-    <div class="p-6 border-b border-slate-800">
-      <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-yellow-400">Visor Comercial</h1>
-      <p class="text-xs text-slate-500 mt-1">Fusión Culinaria (Mobile First)</p>
-    </div>
-    
-    <nav class="flex-1 p-4">
-      <div class="cat-title">Rango 1 - Económico</div>
-      <button class="nav-btn" onclick="loadSite(this, 'http://localhost:8081')">Categoría A - Básico</button>
-      <button class="nav-btn mt-1" onclick="loadSite(this, 'http://localhost:8082')">Categoría B - QR Pro</button>
-      <button class="nav-btn mt-1" onclick="loadSite(this, 'http://localhost:8083')">Categoría C - Autoadministrable</button>
-
-      <div class="cat-title">Rango 2 - Profesional</div>
-      <button class="nav-btn" onclick="loadSite(this, 'http://localhost:8084')">Categoría A - Estético</button>
-      <button class="nav-btn mt-1" onclick="loadSite(this, 'http://localhost:8085')">Categoría B - Pre Pedido WhatsApp</button>
-      <button class="nav-btn mt-1" onclick="loadSite(this, 'http://localhost:8086')">Categoría C - Combo Marca</button>
-
-      <div class="cat-title">Rango 3 - Premium</div>
-      <button class="nav-btn" onclick="loadSite(this, 'http://localhost:8087')">Categoría A - Autor</button>
-    </nav>
-  </aside>
-
-  <main id="main-area" class="flex-1 bg-rustico relative flex items-center justify-center transition-colors duration-500">
-    
-    <!-- Controles de Fondo -->
-    <div class="absolute top-6 right-6 z-20 flex gap-2 bg-black/50 backdrop-blur-md p-2 rounded-xl border border-white/10">
-      <button onclick="changeBg('bg-rustico')" class="px-4 py-2 rounded-lg text-xs font-bold bg-[#2c1e16] text-white border border-white/20 hover:scale-105 transition-transform">Madera Rústica</button>
-      <button onclick="changeBg('bg-marmol')" class="px-4 py-2 rounded-lg text-xs font-bold bg-[#111] text-white border border-white/20 hover:scale-105 transition-transform">Mármol Oscuro</button>
-      <button onclick="changeBg('bg-limpio')" class="px-4 py-2 rounded-lg text-xs font-bold bg-slate-100 text-slate-800 border border-slate-300 hover:scale-105 transition-transform">Mesa Blanca</button>
-    </div>
-
-    <!-- Mockup de Teléfono -->
-    <div class="phone-mockup">
-      <div class="phone-notch"></div>
-      <div class="phone-screen">
-        <iframe id="viewer" src="about:blank" class="w-full h-full border-0"></iframe>
+  <!-- Header Flotante -->
+  <header class="glass-header w-full p-4 flex justify-between items-center z-50 absolute top-0 shadow-sm">
+    <div class="flex items-center gap-3 pl-4">
+      <div class="w-10 h-10 bg-gradient-to-tr from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center font-bold text-white text-xl shadow-lg">FC</div>
+      <div>
+        <h1 class="font-bold text-lg leading-tight uppercase tracking-widest opacity-90">Fusión Culinaria</h1>
+        <p class="text-[10px] uppercase tracking-[0.2em] opacity-60">Showroom Interactivo</p>
       </div>
     </div>
+    
+    <!-- Dropdown Selector de Modelos -->
+    <div class="relative pr-4">
+      <select id="model-selector" onchange="changeModel(this.value)" class="appearance-none bg-black/20 border border-white/20 text-current backdrop-blur-md px-6 py-3 rounded-xl font-semibold cursor-pointer outline-none hover:bg-black/30 transition-colors shadow-lg">
+        <optgroup label="Rango Económico (Estático)">
+          <option value="r1a">Categoría A - Menú Básico</option>
+          <option value="r1b">Categoría B - QR Pro</option>
+          <option value="r1c">Categoría C - Autoadministrable</option>
+        </optgroup>
+        <optgroup label="Rango Profesional (Interactivos SPA)">
+          <option value="r2a">Categoría A - Estético (Tabs)</option>
+          <option value="r2b">Categoría B - Pre Pedido (Carrito WhatsApp)</option>
+          <option value="r2c">Categoría C - Combo Marca (SEO)</option>
+        </optgroup>
+        <optgroup label="Rango Premium (Lujo)">
+          <option value="r3a">Categoría A - Menú de Autor</option>
+        </optgroup>
+      </select>
+      <div class="pointer-events-none absolute inset-y-0 right-8 flex items-center text-current opacity-50">▼</div>
+    </div>
+  </header>
+
+  <!-- Contenido Dividido: Info vs Mockup -->
+  <main class="flex-1 flex flex-col lg:flex-row items-center justify-center pt-20 px-8 gap-12 lg:gap-24 h-full relative z-10">
+    
+    <!-- Lado Izquierdo: Funcionalidades del Modelo -->
+    <div class="max-w-lg space-y-6 opacity-0 translate-y-4 transition-all duration-700 ease-out" id="info-panel">
+      <span id="badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border">RANGO 1</span>
+      <h2 id="title" class="text-5xl font-black leading-tight drop-shadow-md">Menú Básico</h2>
+      <p id="desc" class="text-lg opacity-80 leading-relaxed font-light">La pizarra digital perfecta para dar el salto desde el menú de papel hacia el mundo digital.</p>
+      
+      <div class="pt-6 border-t border-current border-opacity-20">
+        <h3 class="text-sm uppercase tracking-widest font-bold mb-4 opacity-70">Funcionalidades Incluidas:</h3>
+        <ul id="features" class="space-y-3">
+          <!-- Features inyectados por JS -->
+        </ul>
+      </div>
+    </div>
+
+    <!-- Lado Derecho: Celular -->
+    <div class="phone-mockup shadow-2xl">
+      <div class="phone-notch"></div>
+      <div class="phone-screen bg-black">
+        <iframe id="viewer" src="about:blank" class="w-full h-full border-0 bg-white transition-opacity duration-500"></iframe>
+      </div>
+    </div>
+
   </main>
 
   <script>
-    function loadSite(btn, url) {
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
-      // Mostrar estado de carga en el iframe visualmente
+    const modelsData = {
+      "r1a": {
+        url: "http://localhost:8081",
+        badge: "Económico",
+        title: "Pizarra Digital Básica",
+        desc: "Ideal para presupuestos ajustados. Olvídate del PDF, presenta tus platillos de manera limpia y moderna en cualquier dispositivo.",
+        features: [
+          "Diseño Adaptativo (Mobile-First)",
+          "Botón de contacto directo por WhatsApp",
+          "Experiencia de lectura rápida (1 sola vista)"
+        ],
+        theme: "bg-light-clean"
+      },
+      "r1b": {
+        url: "http://localhost:8082",
+        badge: "Económico",
+        title: "Experiencia QR Pro",
+        desc: "Lleva tráfico a tu restaurante físico añadiendo mapas e indicaciones con un solo toque.",
+        features: [
+          "Diseño Rústico de Pizarra (Textura madera)",
+          "Botones integrados de Waze y Google Maps",
+          "Insignias visuales (Nuevo, Recomendado)"
+        ],
+        theme: "bg-wood-rustic"
+      },
+      "r1c": {
+        url: "http://localhost:8083",
+        badge: "Económico",
+        title: "Autoadministrable Dinámico",
+        desc: "Para negocios con precios variables. Actualiza tus platillos sin tener que rediseñar la página.",
+        features: [
+          "Consumo dinámico de JSON",
+          "Sección de Ofertas del Día",
+          "Mismo diseño rústico de alta conversión"
+        ],
+        theme: "bg-wood-rustic"
+      },
+      "r2a": {
+        url: "http://localhost:8084",
+        badge: "Profesional",
+        title: "Aplicación SPA - Estético",
+        desc: "Navegación instantánea. Si tienes un menú gigante, tus clientes pueden saltar entre categorías sin que la pantalla recargue.",
+        features: [
+          "Arquitectura React (Single Page App)",
+          "Pestañas de navegación interactivas",
+          "Estética oscura y moderna (Dark Mode)"
+        ],
+        theme: "bg-dark-pro"
+      },
+      "r2b": {
+        url: "http://localhost:8085",
+        badge: "Profesional",
+        title: "Motor de Pre-Pedido",
+        desc: "Nuestra solución Best-Seller. Convierte tu menú en un cajero automático y ahorra errores humanos en el Delivery.",
+        features: [
+          "🛒 Carrito de Compras en tiempo real",
+          "Selección de opciones y extras con recargo",
+          "Formateo inteligente del pedido por WhatsApp"
+        ],
+        theme: "bg-dark-pro"
+      },
+      "r2c": {
+        url: "http://localhost:8086",
+        badge: "Profesional",
+        title: "Combo Marca (SEO)",
+        desc: "Para restaurantes que invierten en publicidad. Incluye todo el poder del Pre-Pedido, más una indexación impecable para redes.",
+        features: [
+          "🛒 Motor de Pre-Pedido Completo",
+          "Metadatos SEO Inyectados para Google",
+          "Previsualización rica en enlaces (Open Graph)"
+        ],
+        theme: "bg-dark-pro"
+      },
+      "r3a": {
+        url: "http://localhost:8087",
+        badge: "Premium Lujo",
+        title: "Experiencia de Autor",
+        desc: "Un menú que justifica tickets altos. Vende emociones y exclusividad antes del primer bocado.",
+        features: [
+          "✨ Diseño Editorial Asimétrico",
+          "Micro-animaciones fluidas e inmersivas",
+          "Tipografías finas y Efecto Glassmorphism",
+          "El fondo del celular evoca un restaurante de lujo"
+        ],
+        theme: "bg-marble-luxury"
+      }
+    };
+
+    function changeModel(modelKey) {
+      const data = modelsData[modelKey];
+      if(!data) return;
+
+      // 1. Cambiar Tema de Fondo Global
+      const body = document.getElementById('body-container');
+      body.className = `${data.theme} flex flex-col h-screen`;
+
+      // 2. Animar Panel de Info
+      const panel = document.getElementById('info-panel');
+      panel.style.opacity = '0';
+      panel.style.transform = 'translateY(20px)';
+
+      setTimeout(() => {
+        document.getElementById('badge').textContent = data.badge;
+        
+        // Estilo especial para la tarjeta premium
+        if(data.theme === 'bg-marble-luxury') {
+          document.getElementById('title').className = "text-5xl leading-tight drop-shadow-md font-serif italic";
+        } else {
+          document.getElementById('title').className = "text-5xl font-black leading-tight drop-shadow-md";
+        }
+
+        document.getElementById('title').textContent = data.title;
+        document.getElementById('desc').textContent = data.desc;
+        
+        const featuresHtml = data.features.map(f => `<li class="flex items-center gap-2"><span class="opacity-50">✓</span> <span class="font-semibold">${f}</span></li>`).join('');
+        document.getElementById('features').innerHTML = featuresHtml;
+
+        panel.style.opacity = '1';
+        panel.style.transform = 'translateY(0)';
+      }, 300);
+
+      // 3. Cargar Iframe
       const iframe = document.getElementById('viewer');
       iframe.style.opacity = '0';
       setTimeout(() => {
-        iframe.src = url;
-        iframe.onload = () => { iframe.style.opacity = '1'; iframe.style.transition = 'opacity 0.3s'; };
-      }, 200);
-    }
-
-    function changeBg(bgClass) {
-      const main = document.getElementById('main-area');
-      main.classList.remove('bg-rustico', 'bg-marmol', 'bg-limpio');
-      main.classList.add(bgClass);
+        iframe.src = data.url;
+        iframe.onload = () => { iframe.style.opacity = '1'; };
+      }, 300);
     }
 
     // Ocultar loader despues de 8 segundos (asumiendo que los servidores arrancan)
     setTimeout(() => {
       document.getElementById('loader').style.opacity = '0';
-      setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-      // Click en el primero por defecto
-      document.querySelectorAll('.nav-btn')[0].click();
+      setTimeout(() => {
+        document.getElementById('loader').style.display = 'none';
+        changeModel('r1a');
+        document.getElementById('info-panel').style.opacity = '1';
+        document.getElementById('info-panel').style.transform = 'translateY(0)';
+      }, 500);
     }, 8000);
   </script>
 </body>
