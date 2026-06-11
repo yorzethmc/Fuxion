@@ -5,16 +5,25 @@ const fs = require('fs');
 
 const PORT_VISOR = 3000;
 
-const apps = [
-  { path: 'RANGO_1_ECONOMICO/CATEGORIA_A_BASICO', cmd: 'npx.cmd', args: ['-y', 'http-server', '.', '-p', '8081', '-c-1', '--cors'] },
-  { path: 'RANGO_1_ECONOMICO/CATEGORIA_B_QR_PRO', cmd: 'npx.cmd', args: ['-y', 'http-server', '.', '-p', '8082', '-c-1', '--cors'] },
-  { path: 'RANGO_1_ECONOMICO/CATEGORIA_C_AUTOADMINISTRABLE_MANUAL', cmd: 'npx.cmd', args: ['-y', 'http-server', '.', '-p', '8083', '-c-1', '--cors'] },
-  { path: 'RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO', cmd: 'npm.cmd', args: ['run', 'dev', '--', '--port', '8084', '--strictPort'] },
-  { path: 'RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP', cmd: 'npm.cmd', args: ['run', 'dev', '--', '--port', '8085', '--strictPort'] },
-  { path: 'RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA', cmd: 'npm.cmd', args: ['run', 'dev', '--', '--port', '8086', '--strictPort'] },
-  { path: 'RANGO_3_PREMIUM/CATEGORIA_A_AUTOR', cmd: 'npm.cmd', args: ['run', 'dev', '--', '--port', '8087', '--strictPort'] },
-  { path: 'RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET', cmd: 'npm.cmd', args: ['run', 'dev', '--', '--port', '8088', '--strictPort'] }
+const servers = [
+    { dir: 'RANGO_1_ECONOMICO/CATEGORIA_A_BASICO', port: 8081, type: 'static' },
+    { dir: 'RANGO_1_ECONOMICO/CATEGORIA_B_QR_PRO', port: 8082, type: 'static' },
+    { dir: 'RANGO_1_ECONOMICO/CATEGORIA_C_AUTOADMINISTRABLE_MANUAL', port: 8083, type: 'static' },
+    { dir: 'RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO', port: 8084, type: 'react' },
+    { dir: 'RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP', port: 8085, type: 'react' },
+    { dir: 'RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA', port: 8086, type: 'react' },
+    { dir: 'RANGO_3_PREMIUM/CATEGORIA_A_AUTOR', port: 8087, type: 'react' },
+    { dir: 'RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET', port: 8088, type: 'react' },
+    { dir: 'RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN', port: 8089, type: 'react' }
 ];
+
+const apps = servers.map(s => ({
+  path: s.dir,
+  cmd: s.type === 'static' ? 'npx.cmd' : 'npm.cmd',
+  args: s.type === 'static' 
+    ? ['-y', 'http-server', '.', '-p', s.port.toString(), '-c-1', '--cors'] 
+    : ['run', 'dev', '--', '--port', s.port.toString(), '--strictPort']
+}));
 
 const children = [];
 
