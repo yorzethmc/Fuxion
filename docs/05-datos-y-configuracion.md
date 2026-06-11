@@ -8,12 +8,12 @@ Datos usados en las demos:
 Nombre: Fusion Culinaria
 Ubicacion: Sabanilla, Alajuela
 Horario: Lunes a domingo de 11:00 a.m. a 8:00 p.m.
-WhatsApp: 50660224371
+WhatsApp: 50687292124
 ```
 
 ## Numero de WhatsApp
 
-El numero `50660224371` esta repetido en varias categorias.
+El numero oficial es `50687292124`. La fuente recomendada para nuevas integraciones es `docs/menu-data-clean.json`.
 
 Lugares importantes:
 
@@ -25,6 +25,8 @@ RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO/src/App.jsx
 RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP/src/App.jsx
 RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA/src/App.jsx
 RANGO_3_PREMIUM/CATEGORIA_A_AUTOR/src/App.jsx
+RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET/src/App.jsx
+RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN/src/pages/Menu.jsx
 ```
 
 Si cambia el numero, hay que actualizarlo en todos esos lugares.
@@ -45,7 +47,7 @@ Estructura:
     "name": "Fusion Culinaria",
     "location": "Sabanilla, Alajuela",
     "hours": "Lunes a domingo de 11:00 a.m. a 8:00 p.m.",
-    "whatsapp": "50660224371"
+    "whatsapp": "50687292124"
   },
   "categories": []
 }
@@ -103,7 +105,7 @@ Las demos con carrito construyen mensajes con:
 
 ## Ubicacion
 
-La categoria QR Pro incluye enlaces a:
+Las categorias QR Pro, Autoadministrable Manual y las versiones con checkout incluyen enlaces a:
 
 - Waze.
 - Google Maps.
@@ -118,10 +120,12 @@ Para mayor precision conviene usar coordenadas exactas o una ficha verificada de
 
 ## SEO
 
-La categoria con SEO mas completo es:
+Las categorias con SEO mas completo son:
 
 ```txt
 RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA/index.html
+RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET/index.html
+RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN/index.html
 ```
 
 Incluye:

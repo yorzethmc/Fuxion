@@ -13,6 +13,8 @@ La idea principal es mostrar diferentes niveles de servicio digital para un nego
 - Pre-pedido por WhatsApp con carrito.
 - Combo de marca con SEO local y configuracion de despliegue.
 - Experiencia premium visual con imagenes y secciones de marca.
+- E-commerce gourmet con carrito, checkout y validaciones.
+- Cloud Kitchen & POS con menu cliente, admin, cocina y datos demo.
 
 ## Estado actual
 
@@ -20,7 +22,7 @@ El proyecto ya tiene una estructura funcional de demos separadas por rangos:
 
 - `RANGO_1_ECONOMICO`: demos HTML simples.
 - `RANGO_2_PROFESIONAL`: demos Vite + React.
-- `RANGO_3_PREMIUM`: demo Vite + React con tratamiento visual mas premium.
+- `RANGO_3_PREMIUM`: demos Vite + React con tratamiento visual premium, e-commerce y operacion Cloud Kitchen/POS.
 
 Todas las demos estan orientadas a celular y usan WhatsApp como canal principal para convertir visitas en pedidos.
 
@@ -33,7 +35,7 @@ El proyecto parece pensado para vender o presentar paquetes web a restaurantes p
 El numero configurado para pedidos es:
 
 ```txt
-50660224371
+50687292124
 ```
 
 Este numero aparece en enlaces `wa.me` dentro de las demos.

@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     // Fetch data from SSOT (Single Source of Truth)
-    const response = await fetch('../../docs/menu-data-clean.json');
+    const response = await fetch('./menu.json');
     if (!response.ok) throw new Error('No se pudo cargar el menú');
     const data = await response.json();
     
@@ -47,7 +47,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         html += `
           <article class="py-4 border-b border-white/5 last:border-0 flex justify-between gap-4">
             <div>
-              <h3 class="font-bold text-gray-100 flex items-center">${item.name}</h3>
+              <h3 class="font-bold text-gray-100 flex items-center">
+                ${item.name}
+                ${item.isRecommended ? '<span class="ml-2 rounded-md bg-fusion-yellow/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-fusion-yellow border border-fusion-yellow/20">RECOMENDADO</span>' : ''}
+                ${item.isNew ? '<span class="ml-2 rounded-md bg-fusion-orange/20 px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-fusion-orange border border-fusion-orange/30">NUEVO</span>' : ''}
+              </h3>
               <p class="mt-1 text-xs leading-relaxed text-gray-500">${item.description}</p>
             </div>
             <strong class="shrink-0 text-sm font-black text-fusion-yellow">${formatPrice(item.price)}</strong>

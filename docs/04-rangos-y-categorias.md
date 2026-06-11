@@ -188,7 +188,11 @@ RANGO_3_PREMIUM/CATEGORIA_A_AUTOR/src/App.jsx
 Incluye:
 
 - Hero visual con imagenes externas de Unsplash.
-- Promos destacadas con imagenes.
+- Menu completo por categorias.
+- Modal de producto con opciones.
+- Carrito.
+- Checkout con datos de cliente, servicio y pago.
+- Enlaces de Waze, Google Maps y WhatsApp.
 - Seccion de experiencia: horario, domicilio y ubicacion.
 - Footer con contacto.
 - Estilo mas editorial y premium.
@@ -201,5 +205,59 @@ Uso ideal:
 Limitaciones:
 
 - Usa imagenes externas genericas, no fotos reales del negocio.
-- No tiene carrito ni pedido detallado.
-- No tiene SEO tan completo como `CATEGORIA_C_COMBO_MARCA`.
+- No guarda pedidos en backend.
+
+### CATEGORIA_B_ECOMMERCE_GOURMET
+
+Archivo principal:
+
+```txt
+RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET/src/App.jsx
+```
+
+Incluye:
+
+- Experiencia gourmet con carrito avanzado.
+- Checkout modal con nombre, telefono, direccion condicional y metodo de pago.
+- Validacion de efectivo.
+- Ticket de pedido estructurado.
+- SEO y Open Graph en `index.html`.
+- Enlaces de Waze, Google Maps y WhatsApp.
+
+Uso ideal:
+
+- Demo premium orientada a compra directa y ticket operativo.
+
+Limitaciones:
+
+- No tiene pasarela de pago.
+- No guarda historial en backend.
+
+### CATEGORIA_C_SAAS_CLOUD_KITCHEN
+
+Archivos principales:
+
+```txt
+RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN/src/pages/Menu.jsx
+RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN/src/pages/Admin.jsx
+RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN/src/pages/POS.jsx
+RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN/src/localDemoData.js
+```
+
+Incluye:
+
+- Menu cliente con carrito y creacion de ordenes.
+- Admin para disponibilidad y precios.
+- POS/KDS con ordenes pendientes, impresion y completar orden.
+- Firebase/Firestore.
+- Fallback local con datos demo.
+- Script de seed para menu y ordenes iniciales.
+- Configuracion SPA para Vercel y Netlify.
+
+Uso ideal:
+
+- Paquete premium operativo para Cloud Kitchen, cocina fantasma o restaurante que necesita flujo interno de ordenes.
+
+Limitaciones:
+
+- No tiene autenticacion, roles ni pagos integrados.
