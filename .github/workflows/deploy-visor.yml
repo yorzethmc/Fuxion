@@ -15,63 +15,62 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
 
       - name: Build Rango 2 - Categoría A
         working-directory: ./RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO
-        run: npm install && npm run build
+        run: npm install --legacy-peer-deps && npm run build
 
       - name: Build Rango 2 - Categoría B
         working-directory: ./RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP
-        run: npm install && npm run build
+        run: npm install --legacy-peer-deps && npm run build
 
       - name: Build Rango 2 - Categoría C
         working-directory: ./RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA
-        run: npm install && npm run build
+        run: npm install --legacy-peer-deps && npm run build
 
       - name: Build Rango 3 - Categoría A
         working-directory: ./RANGO_3_PREMIUM/CATEGORIA_A_AUTOR
-        run: npm install && npm run build
+        run: npm install --legacy-peer-deps && npm run build
 
       - name: Build Rango 3 - Categoría B
         working-directory: ./RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET
-        run: npm install && npm run build
+        run: npm install --legacy-peer-deps && npm run build
 
       - name: Build Rango 3 - Categoría C
         working-directory: ./RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN
-        run: npm install && npm run build
+        run: npm install --legacy-peer-deps && npm run build
 
-      - name: Create Static Site Folder
+      - name: Assemble Static Site
         run: |
-          mkdir public_html
-          
-          # Copy HTML Models
-          cp visor.html public_html/index.html
-          
+          mkdir -p public_html
+
+          # ---- Rango 1 (Static HTML) ----
           mkdir -p public_html/RANGO_1_ECONOMICO/CATEGORIA_A_BASICO
           cp -r RANGO_1_ECONOMICO/CATEGORIA_A_BASICO/* public_html/RANGO_1_ECONOMICO/CATEGORIA_A_BASICO/
-          
+
           mkdir -p public_html/RANGO_1_ECONOMICO/CATEGORIA_B_QR_PRO
           cp -r RANGO_1_ECONOMICO/CATEGORIA_B_QR_PRO/* public_html/RANGO_1_ECONOMICO/CATEGORIA_B_QR_PRO/
-          
+
           mkdir -p public_html/RANGO_1_ECONOMICO/CATEGORIA_C_AUTOADMINISTRABLE_MANUAL
           cp -r RANGO_1_ECONOMICO/CATEGORIA_C_AUTOADMINISTRABLE_MANUAL/* public_html/RANGO_1_ECONOMICO/CATEGORIA_C_AUTOADMINISTRABLE_MANUAL/
-          
-          # Copy React Built Models
+
+          # ---- Rango 2 (React dist) ----
           mkdir -p public_html/RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO
           cp -r RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO/dist/* public_html/RANGO_2_PROFESIONAL/CATEGORIA_A_ESTETICO/
-          
+
           mkdir -p public_html/RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP
           cp -r RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP/dist/* public_html/RANGO_2_PROFESIONAL/CATEGORIA_B_PRE_PEDIDO_WHATSAPP/
-          
+
           mkdir -p public_html/RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA
           cp -r RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA/dist/* public_html/RANGO_2_PROFESIONAL/CATEGORIA_C_COMBO_MARCA/
-          
+
+          # ---- Rango 3 (React dist) ----
           mkdir -p public_html/RANGO_3_PREMIUM/CATEGORIA_A_AUTOR
           cp -r RANGO_3_PREMIUM/CATEGORIA_A_AUTOR/dist/* public_html/RANGO_3_PREMIUM/CATEGORIA_A_AUTOR/
 
@@ -81,7 +80,11 @@ jobs:
           mkdir -p public_html/RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN
           cp -r RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN/dist/* public_html/RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN/
 
-          # Prepare Visor.html for static hosting
+          # ---- Copy docs (shared assets like logo) ----
+          mkdir -p public_html/docs
+          cp -r docs/* public_html/docs/ 2>/dev/null || true
+
+          # ---- Build visor.html for static hosting ----
           cat visor.html | \
             sed 's|http://localhost:8081|RANGO_1_ECONOMICO/CATEGORIA_A_BASICO/index.html|g' | \
             sed 's|http://localhost:8082|RANGO_1_ECONOMICO/CATEGORIA_B_QR_PRO/index.html|g' | \
@@ -92,11 +95,6 @@ jobs:
             sed 's|http://localhost:8087|RANGO_3_PREMIUM/CATEGORIA_A_AUTOR/index.html|g' | \
             sed 's|http://localhost:8088|RANGO_3_PREMIUM/CATEGORIA_B_ECOMMERCE_GOURMET/index.html|g' | \
             sed 's|http://localhost:8089|RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN/index.html|g' > public_html/index.html
-          
-          # Remove loader script from static visor
-          sed -i '/<div id="loader">/,/<\/div>/d' public_html/index.html
-          sed -i 's/setTimeout(() => {/setTimeout(() => {/g' public_html/index.html
-          sed -i 's/}, 8000);/}, 0);/g' public_html/index.html
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
