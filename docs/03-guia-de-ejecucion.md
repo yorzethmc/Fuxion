@@ -75,7 +75,7 @@ La demo `RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN` agrega:
 npm run seed
 ```
 
-Este comando inyecta restaurante, categorias, productos y ordenes demo en Firestore.
+Este comando inyecta restaurante, categorias, productos y ordenes demo en Firestore. Requiere que Cloud Firestore API este habilitada en el proyecto Firebase configurado.
 
 ## Build de produccion
 

@@ -12,6 +12,15 @@ Se corrigieron los hallazgos criticos de retencion funcional entre niveles:
 - Rango 3B conserva checkout premium y suma telefono, ubicacion, SEO y validacion de efectivo.
 - Rango 3C Cloud Kitchen/POS ya no depende exclusivamente de Firebase: tiene fallback local, datos demo, seed y rutas SPA.
 
+## Evidencia Post-Correccion
+
+- `npm run build` en las 6 apps React: todos los builds pasan.
+- R2B en navegador: producto agregado, carrito, quitar, modalidad, pago y campos de cliente visibles.
+- R3A en navegador: Waze/Maps, carrito, modalidad, datos, pago y WhatsApp visibles.
+- R3B en navegador: titulo/meta correctos, Waze/Maps, carrito y telefono en checkout visibles.
+- R3C en navegador: `/`, `/admin` y `/pos` salen de carga y muestran `MODO DEMO LOCAL` con productos y ordenes demo.
+- `npm run seed`: script ejecuta, pero Firebase bloquea escritura porque Cloud Firestore API esta deshabilitada en `fusion-culinaria`.
+
 ## Matriz de Retencion Actual
 
 | Pagina | Menu | WhatsApp | Maps | Tabs | Carrito/opciones | Checkout datos/pago | Admin/POS | Estado |
@@ -138,13 +147,14 @@ Corregido:
 
 - Menu, Admin y POS usan timeout de Firebase.
 - Fallback local con `localStorage` y datos demo.
-- Seed local y seed Firestore con menu completo y ordenes demo.
+- Seed local y script Firestore con menu completo y ordenes demo.
 - POS muestra ordenes demo, permite completar e imprimir.
 - Admin permite activar/desactivar productos y cambiar precios en modo local si Firebase falla.
 - Rutas SPA preparadas con `vercel.json` y `public/_redirects`.
 
 Riesgo remanente:
 
+- La API Cloud Firestore esta deshabilitada en el proyecto remoto, por lo que la inyeccion real en Firebase queda bloqueada hasta activarla.
 - Admin y POS siguen sin autenticacion ni reglas Firestore versionadas.
 
 ## Backlog Recomendado

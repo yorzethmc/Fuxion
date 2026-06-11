@@ -39,11 +39,12 @@ La regla critica es que un nivel superior no debe perder funciones vendidas en n
 
 ## Resultado tecnico de build
 
-Se ejecuto `npm run build` en las 6 apps React. Todas compilaron.
+Se ejecuto `npm run build` en las 6 apps React despues de las correcciones. Todas compilaron.
 
 Hallazgo tecnico:
 
-- `RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN` genera un bundle de `526.90 kB` minificado y Vite recomienda code splitting.
+- `RANGO_3_PREMIUM/CATEGORIA_C_SAAS_CLOUD_KITCHEN` genera un bundle de `531.00 kB` minificado y Vite recomienda code splitting.
+- `npm run seed` esta implementado, pero Firebase respondio que Cloud Firestore API no esta habilitada para el proyecto `fusion-culinaria`; la app queda protegida por fallback local hasta que se active esa API.
 
 ## Estado tras correcciones
 
